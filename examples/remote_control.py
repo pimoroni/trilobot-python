@@ -18,7 +18,7 @@ def set_left_motor(value):
 def set_right_motor(value):
     trilobot.set_motor_speed(1, value)
 
-
+"""
 controller = SimpleController("8BitDo Lite gamepad")
 controller.connect()
 
@@ -52,6 +52,7 @@ controller.register_axis("LY", 1, 0, 65536, set_left_motor)
 controller.register_axis("RX", 3, 0, 65536)
 controller.register_axis("RY", 4, 0, 65536, set_right_motor)
 """
+"""
 controller = SimpleController("8Bitdo SN30 GamePad")
 controller.connect()
 
@@ -72,6 +73,30 @@ controller.register_axis_as_button("Down", 1, 255, 127)
 controller.register_axis("X", 0, -1, 255, set_left_motor)
 controller.register_axis("Y", 1, -1, 255, set_right_motor)
 """
+controller = SimpleController("Performance Designed Products Rock Candy Wireless Gamepad for PS3")
+controller.connect()
+
+# Button and axis registrations for Rock Candy PS3 Controller
+controller.register_button("Cross", 305)
+controller.register_button("Circle", 306)
+controller.register_button("Square", 304)
+controller.register_button("Triangle", 307)
+controller.register_button("Start", 313)
+controller.register_button("Select", 312)
+controller.register_button("Home", 316)
+controller.register_button("R1", 309)
+controller.register_button("R2", 311)
+controller.register_button("L1", 308)
+controller.register_button("L2", 310)
+controller.register_axis_as_button("Left", 16, -1, 0)
+controller.register_axis_as_button("Right", 16, 1, 0)
+controller.register_axis_as_button("Up", 17, -1, 0)
+controller.register_axis_as_button("Down", 17, 1, 0)
+
+controller.register_axis("LX", 0, 0, 256)
+controller.register_axis("LY", 1, 0, 256)
+controller.register_axis("RX", 2, 0, 256)
+controller.register_axis("RY", 5, 0, 256)
 
 for led in range(trilobot.NUM_UNDERLIGHTS):
     trilobot.fill_underlighting(0, 0, 0)
@@ -114,16 +139,38 @@ while True:
             led_h = h + (led * spacing)
             if led_h >= 1.0:
                 led_h -= 1.0
-            if controller.read_button("A"):
-                colour = [0, 1.0, 0]
-            else:
-                colour = hsv_to_rgb(led_h, 1, 1)
+
+            try:
+                if controller.read_button("A"):
+                    colour = [0, 1.0, 0]
+                else:
+                    colour = hsv_to_rgb(led_h, 1, 1)
+            except:
+                if controller.read_button("Circle"):
+                    colour = [0, 1.0, 0]
+                else:
+                    colour = hsv_to_rgb(led_h, 1, 1)
             trilobot.set_underlighting(led, colour[0], colour[1], colour[2])
 
         trilobot.show_underlighting()
         h += 0.5 / 360
         if h >= 1.0:
             h -= 1.0
+
+        lx = controller.read_axis("LX")
+        ly = controller.read_axis("LY")
+        left = lx - ly
+        if left < -1.0:
+            left = -1.0
+        if left > 1.0:
+            left = 1.0
+        right = lx + ly
+        if right < -1.0:
+            right = -1.0
+        if right > 1.0:
+            right = 1.0
+        trilobot.set_motor_speed(0, left)
+        trilobot.set_motor_speed(1, right)
     else:
         val = (math.sin(v) / 2.0) + 0.5
         trilobot.fill_underlighting(val * 0.5, 0, 0)
