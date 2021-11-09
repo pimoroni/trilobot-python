@@ -10,10 +10,10 @@ __version__ = '0.0.1'
 
 class Trilobot():
     # User buttons
-    BUTTON_A = 24
-    BUTTON_B = 16
-    BUTTON_X = 6
-    BUTTON_Y = 5
+    BUTTON_A = 5
+    BUTTON_B = 6
+    BUTTON_X = 16
+    BUTTON_Y = 24
 
     # Onboard LEDs next to each button
     LED_A = 23
