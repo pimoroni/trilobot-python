@@ -39,12 +39,12 @@ class Trilobot():
     UNDERLIGHTING_EN = 7
 
     # Underlighting LED locations
-    FRONT_LEFT = 0
-    MIDDLE_LEFT = 1
-    REAR_LEFT = 2
-    REAR_RIGHT = 3
-    MIDDLE_RIGHT = 4
-    FRONT_RIGHT = 5
+    FRONT_RIGHT = 0
+    FRONT_LEFT = 1
+    MIDDLE_LEFT = 2
+    REAR_LEFT = 3
+    REAR_RIGHT = 4
+    MIDDLE_RIGHT = 5
     NUM_UNDERLIGHTS = 6
 
     def __init__(self):
