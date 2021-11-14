@@ -47,6 +47,10 @@ class Trilobot():
     FRONT_RIGHT = 5
     NUM_UNDERLIGHTS = 6
 
+    # Half the speed of sound in mm/s.
+    SOUND_CONVERSION_FACTOR_MM = 343000 / 2
+
+
     def __init__(self):
         """Initialise trilobot
         """
@@ -118,6 +122,10 @@ class Trilobot():
 
         GPIO.output(self.UNDERLIGHTING_EN, False)
         sn3218.output([128 for i in range(18)])
+
+        # setup ultrasonic sensor pins
+        GPIO.setup(self.ULTRA_TRIG, GPIO.OUT)
+        GPIO.setup(self.ULTRA_ECHO, GPIO.IN)
 
     def __del__(self):
         sn3218.disable()
@@ -213,6 +221,30 @@ class Trilobot():
         else:
             pwm_p.ChangeDutyCycle(100)
             pwm_n.ChangeDutyCycle(100)
+
+    def sense_distance_mm(self):
+        """Return a distance in mm from the ultrasound sensor"""
+        time_out = 1000
+
+        # Trigger
+        GPIO.output(self.ULTRA_TRIG, 1)
+        time.sleep(.00001) # 10 microseconds
+        GPIO.output(self.ULTRA_TRIG, 0)
+
+        # Wait for the ECHO pin to go high
+        # wait for the pulse rise
+        GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.RISING, timeout=time_out)
+        pulse_start = time.time()
+
+        # And wait for it to fall
+        GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.FALLING, timeout=time_out)
+        pulse_end = time.time()
+
+        # get the duration, and convert
+        pulse_duration = pulse_end - pulse_start
+        distance = pulse_duration * self.SOUND_CONVERSION_FACTOR_MM
+        # return as an integer, sub mm don't matter
+        return int(distance)
 
 
 if __name__ == "__main__":
