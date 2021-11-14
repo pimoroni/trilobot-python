@@ -222,10 +222,9 @@ class Trilobot():
             pwm_p.ChangeDutyCycle(100)
             pwm_n.ChangeDutyCycle(100)
 
-    def sense_distance_mm(self):
-        """Return a distance in mm from the ultrasound sensor"""
-        time_out = 1000
-
+    def sense_distance_mm(self, timeout=1000):
+        """Return a distance in mm from the ultrasound sensor.
+        timeout is in ms"""
         # Trigger
         GPIO.output(self.ULTRA_TRIG, 1)
         time.sleep(.00001) # 10 microseconds
@@ -233,11 +232,11 @@ class Trilobot():
 
         # Wait for the ECHO pin to go high
         # wait for the pulse rise
-        GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.RISING, timeout=time_out)
+        GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.RISING, timeout=timeout)
         pulse_start = time.time()
 
         # And wait for it to fall
-        GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.FALLING, timeout=time_out)
+        GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.FALLING, timeout=timeout)
         pulse_end = time.time()
 
         # get the duration, and convert
