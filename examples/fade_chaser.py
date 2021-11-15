@@ -3,7 +3,7 @@
 import time
 from trilobot import Trilobot
 
-print("Trilobot Larson Scanner Demo\n")
+print("Trilobot LED Fading Chaser Demo\n")
 
 
 trilobot = Trilobot()
@@ -28,7 +28,7 @@ def map(x, in_min, in_max, out_min, out_max):
 
 
 # Shows a band with a given width at the position on the leds
-def larson_band(position, width, hue):
+def chaser_band(position, width, hue):
     half_width = width/2
     centre_position = map(position, -1.0, 1.0, 1.0 - half_width, float(trilobot.NUM_UNDERLIGHTS) - 1.0 + half_width)
     if width > 0.0:
@@ -67,7 +67,7 @@ position = 0.0
 clockwise = True
 while True:
     # Draw the band
-    larson_band(position, WIDTH, HUE)
+    chaser_band(position, WIDTH, HUE)
     trilobot.show_underlighting()
 
     if clockwise:
