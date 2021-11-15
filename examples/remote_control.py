@@ -75,19 +75,9 @@ while True:
             h -= 1.0
 
         lx = controller.read_axis("LX")
-        ly = controller.read_axis("LY")
-        left = lx - ly
-        if left < -1.0:
-            left = -1.0
-        if left > 1.0:
-            left = 1.0
-        right = lx + ly
-        if right < -1.0:
-            right = -1.0
-        if right > 1.0:
-            right = 1.0
-        trilobot.set_motor_speed(0, left)
-        trilobot.set_motor_speed(1, right)
+        ly = 0 - controller.read_axis("LY")
+        trilobot.set_left_speed(ly + lx)
+        trilobot.set_right_speed(ly - lx)
     else:
         val = (math.sin(v) / 2.0) + 0.5
         trilobot.fill_underlighting(val * 0.5, 0, 0)

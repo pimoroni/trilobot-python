@@ -39,13 +39,18 @@ class Trilobot():
     UNDERLIGHTING_EN = 7
 
     # Underlighting LED locations
-    FRONT_LEFT = 0
-    MIDDLE_LEFT = 1
-    REAR_LEFT = 2
-    REAR_RIGHT = 3
-    MIDDLE_RIGHT = 4
-    FRONT_RIGHT = 5
+    FRONT_RIGHT = 0
+    FRONT_LEFT = 1
+    MIDDLE_LEFT = 2
+    REAR_LEFT = 3
+    REAR_RIGHT = 4
+    MIDDLE_RIGHT = 5
     NUM_UNDERLIGHTS = 6
+
+    # Motor names
+    LEFT_MOTOR = 0
+    RIGHT_MOTOR = 1
+    NUM_MOTORS = 2
 
     # Half the speed of sound in mm/s.
     SOUND_CONVERSION_FACTOR_MM = 343000 / 2
@@ -199,8 +204,11 @@ class Trilobot():
         if motor not in range(2):
             raise ValueError("motor must be an integer in the range 0 to 1")
 
-        if speed < -1.0 or speed > 1.0:
-            raise ValueError("speed must be in the range -1.0 to 1.0")
+        #Limit the speed value rather than throw a value exception
+        if speed < -1.0:
+            speed = -1.0
+        elif speed > 1.0:
+            speed = 1.0
 
         GPIO.output(self.MOTOR_EN, True)
         pwm_p = None
@@ -209,8 +217,9 @@ class Trilobot():
             pwm_p = self.motor_pwm_mapping[self.MOTOR_LEFT_P]
             pwm_n = self.motor_pwm_mapping[self.MOTOR_LEFT_N]
         else:
-            pwm_p = self.motor_pwm_mapping[self.MOTOR_RIGHT_P]
-            pwm_n = self.motor_pwm_mapping[self.MOTOR_RIGHT_N]
+            # Right motor inverted so a positive speed drives forward
+            pwm_p = self.motor_pwm_mapping[self.MOTOR_RIGHT_N]
+            pwm_n = self.motor_pwm_mapping[self.MOTOR_RIGHT_P]
 
         if speed > 0.0:
             pwm_p.ChangeDutyCycle(100)
@@ -221,6 +230,12 @@ class Trilobot():
         else:
             pwm_p.ChangeDutyCycle(100)
             pwm_n.ChangeDutyCycle(100)
+
+    def set_left_speed(self, speed):
+        self.set_motor_speed(self.LEFT_MOTOR, speed)
+
+    def set_right_speed(self, speed):
+        self.set_motor_speed(self.RIGHT_MOTOR, speed)
 
     def sense_distance_mm(self, timeout=1000):
         """Return a distance in mm from the ultrasound sensor.
@@ -244,7 +259,6 @@ class Trilobot():
         distance = pulse_duration * self.SOUND_CONVERSION_FACTOR_MM
         # return as an integer, sub mm don't matter
         return int(distance)
-
 
 if __name__ == "__main__":
     trilobot = Trilobot()
@@ -321,6 +335,6 @@ if __name__ == "__main__":
             y = max(y - 0.01, 0.0)
         trilobot.set_led(trilobot.LED_Y, y)
 
-        trilobot.set_motor_speed(0, a - b)
-        trilobot.set_motor_speed(1, y - x)
+        trilobot.set_left_speed(a - b)
+        trilobot.set_right_speed(x - y)
         time.sleep(0.01)
