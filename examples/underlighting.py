@@ -11,7 +11,7 @@ trilobot = Trilobot()
 print("Separate red, green, blue ...")
 
 # Turn the underlighting off if it was still on from some past code
-trilobot.fill_underlighting(0, 0, 0)
+trilobot.fill_underlighting(0, 0, 0)    # Black
 trilobot.show_underlighting()
 time.sleep(0.5)
 
@@ -29,7 +29,7 @@ time.sleep(3)
 print("Hex color codes ...")
 
 # Turn the underlighting off using a color code
-trilobot.fill_underlighting('#000000')
+trilobot.fill_underlighting('#000000')  # Black
 trilobot.show_underlighting()
 time.sleep(0.5)
 
@@ -67,6 +67,23 @@ trilobot.set_underlighting(trilobot.REAR_LEFT, GREEN)
 trilobot.set_underlighting(trilobot.REAR_RIGHT, CYAN)
 trilobot.set_underlighting(trilobot.MIDDLE_RIGHT, BLUE)
 trilobot.set_underlighting(trilobot.FRONT_RIGHT, MAGENTA)
+trilobot.show_underlighting()
+time.sleep(3)
+
+print("Hue / Sat / Val ...")
+
+# Turn the underlighting off using a list/tuple
+trilobot.fill_underlighting_hsv(0.0, 0.0, 0.0)  # Black
+trilobot.show_underlighting()
+time.sleep(0.5)
+
+# Set underlighting using a list/tuple
+trilobot.set_underlighting_hsv(trilobot.FRONT_LEFT, 0 / 6, 1.0, 1.0)    # Red
+trilobot.set_underlighting_hsv(trilobot.MIDDLE_LEFT, 1 / 6, 1.0, 1.0)   # Yellow
+trilobot.set_underlighting_hsv(trilobot.REAR_LEFT, 2 / 6, 1.0, 1.0)     # Green
+trilobot.set_underlighting_hsv(trilobot.REAR_RIGHT, 3 / 6, 1.0, 1.0)    # Cyan
+trilobot.set_underlighting_hsv(trilobot.MIDDLE_RIGHT, 4 / 6, 1.0, 1.0)  # Blue
+trilobot.set_underlighting_hsv(trilobot.FRONT_RIGHT, 5 / 6, 1.0, 1.0)   # Magenta
 trilobot.show_underlighting()
 time.sleep(3)
 
