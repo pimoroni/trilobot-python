@@ -11,7 +11,7 @@ trilobot = Trilobot()
 
 #
 # Uncomment one of the lines below to use one of the existing controller
-# # mappings. Or create your own using the SimpleController class
+# mappings. Or create your own using the SimpleController class
 #
 # controller = controller_mappings.create_8bitdo_lite_controller()
 # controller = controller_mappings.create_8bitdo_sn30_controller()
@@ -23,15 +23,15 @@ controller.connect()
 
 for led in range(trilobot.NUM_UNDERLIGHTS):
     trilobot.fill_underlighting(0, 0, 0)
-    trilobot.set_underlighting(led, 1.0, 0, 0)
+    trilobot.set_underlighting(led, 255, 0, 0)
     trilobot.show_underlighting()
     time.sleep(0.1)
     trilobot.fill_underlighting(0, 0, 0)
-    trilobot.set_underlighting(led, 0, 1.0, 0)
+    trilobot.set_underlighting(led, 0, 255, 0)
     trilobot.show_underlighting()
     time.sleep(0.1)
     trilobot.fill_underlighting(0, 0, 0)
-    trilobot.set_underlighting(led, 0, 0, 1.0)
+    trilobot.set_underlighting(led, 0, 0, 255)
     trilobot.show_underlighting()
     time.sleep(0.1)
 
@@ -64,10 +64,9 @@ while True:
                 led_h -= 1.0
 
             if controller.read_button("A"):
-                colour = [0, 1.0, 0]
+                trilobot.set_underlighting_hsv(led, 0.0, 0.0, 0.7)
             else:
-                colour = hsv_to_rgb(led_h, 1, 1)
-            trilobot.set_underlighting(led, colour[0], colour[1], colour[2])
+                trilobot.set_underlighting_hsv(led, led_h)
 
         trilobot.show_underlighting()
         h += 0.5 / 360
@@ -80,7 +79,7 @@ while True:
         trilobot.set_right_speed(ly - lx)
     else:
         val = (math.sin(v) / 2.0) + 0.5
-        trilobot.fill_underlighting(val * 0.5, 0, 0)
+        trilobot.fill_underlighting(val * 127, 0, 0)
         trilobot.show_underlighting()
         v += math.pi / 200
 
