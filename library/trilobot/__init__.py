@@ -260,6 +260,7 @@ class Trilobot():
         # return as an integer, sub mm don't matter
         return int(distance)
 
+
 if __name__ == "__main__":
     trilobot = Trilobot()
 
