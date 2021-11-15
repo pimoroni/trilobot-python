@@ -20,14 +20,14 @@ atexit.register(off)
 # Cycle R, G, B 10 times.
 for i in range(0, 10):
     print(i)
-    tb.fill_underlighting(1, 0, 0)
+    tb.fill_underlighting(255, 0, 0)
     tb.show_underlighting()
     time.sleep(interval)
 
-    tb.fill_underlighting(0, 1, 0)
+    tb.fill_underlighting(0, 255, 0)
     tb.show_underlighting()
     time.sleep(interval)
 
-    tb.fill_underlighting(0, 0, 1)
+    tb.fill_underlighting(0, 0, 255)
     tb.show_underlighting()
     time.sleep(interval)

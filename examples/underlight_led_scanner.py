@@ -20,13 +20,13 @@ while True:
     for n in range(0, 5):
         phy_led = mapping[n]
         tb.fill_underlighting(0, 0, 0)
-        tb.set_underlighting(phy_led, 1, 0, 0)
+        tb.set_underlighting(phy_led, 255, 0, 0)
         tb.show_underlighting()
         time.sleep(interval)
 
     for n in range(5, 0, -1):
         phy_led = mapping[n]
         tb.fill_underlighting(0, 0, 0)
-        tb.set_underlighting(phy_led, 1, 0, 0)
+        tb.set_underlighting(phy_led, 255, 0, 0)
         tb.show_underlighting()
         time.sleep(interval)
