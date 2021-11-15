@@ -29,10 +29,11 @@ def map(x, in_min, in_max, out_min, out_max):
 
 # Shows a band with a given width at the position on the leds
 def larson_band(position, width, hue):
-    centre_position = map(position, -1.0, 1.0, 0.0, float(trilobot.NUM_UNDERLIGHTS))
-    if centre_position >= 0.0 and width > 0.0:
-        band_pixels_start = centre_position - (width / 2)
-        band_pixels_end = centre_position + (width / 2)
+    half_width = width/2
+    centre_position = map(position, -1.0, 1.0, 1.0 - half_width, float(trilobot.NUM_UNDERLIGHTS) - 1.0 + half_width)
+    if width > 0.0:
+        band_pixels_start = centre_position - (half_width)
+        band_pixels_end = centre_position + (half_width)
 
         # Go through each led
         for i in range(trilobot.NUM_UNDERLIGHTS):
