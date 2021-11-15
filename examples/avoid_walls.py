@@ -12,14 +12,14 @@ def off():
 atexit.register(off)
 
 # Start moving forward
-tb.set_motor_speed(0, speed)
-tb.set_motor_speed(1, -speed)
+tb.set_left_speed(speed)
+tb.set_right_speed(speed)
 
 while True:
     distance = tb.sense_distance_mm(timeout=400)
     # turn if we are too close
     if distance < 300:
-        tb.set_motor_speed(1, speed)
+        tb.set_right_speed(-speed)
     else:
-        tb.set_motor_speed(1, -speed)
+        tb.set_right_speed(speed)
     # no sleep needed, distance sensor provides sleep
