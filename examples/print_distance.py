@@ -5,7 +5,7 @@ from trilobot import Trilobot
 if __name__ == '__main__':
     tb = Trilobot()
     
-    while True:
+    while not tb.read_button(tb.BUTTON_A):
 
         #Take 10 measurements rapidly for shorter distances
         for i in range(10):
