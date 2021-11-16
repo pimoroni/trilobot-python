@@ -16,9 +16,9 @@ tb.set_left_speed(speed)
 tb.set_right_speed(speed)
 
 while True:
-    distance = tb.sense_distance_mm(timeout=400)
-    # turn if we are too close
-    if distance < 300:
+    distance = tb.read_distance()
+    # turn if we are too closer than 30cm
+    if distance < 30:
         tb.set_right_speed(-speed)
     else:
         tb.set_right_speed(speed)

@@ -52,8 +52,8 @@ class Trilobot():
     RIGHT_MOTOR = 1
     NUM_MOTORS = 2
 
-    # Half the speed of sound in mm/s.
-    SOUND_CONVERSION_FACTOR_MM = 343000 / 2
+    # Half the speed of sound in cm/ns.
+    SOUND_CONVERSION_FACTOR_CM_NS = 0.00001715
 
 
     def __init__(self):
@@ -237,28 +237,72 @@ class Trilobot():
     def set_right_speed(self, speed):
         self.set_motor_speed(self.RIGHT_MOTOR, speed)
 
-    def sense_distance_mm(self, timeout=1000):
-        """Return a distance in mm from the ultrasound sensor.
-        timeout is in ms"""
-        # Trigger
-        GPIO.output(self.ULTRA_TRIG, 1)
-        time.sleep(.00001) # 10 microseconds
-        GPIO.output(self.ULTRA_TRIG, 0)
+    def read_distance(self, timeout=50, samples=3, offset=190000):
+        """ Return a distance in cm from the ultrasound sensor.
+        timeout: total time in ms to try to get distance reading
+        samples: determines how many readings to average
+        offset: Time in ns the measurement takes (prevents over estimates)
+        Returns the measured distance in centimetres as a float.
+        
+        To give more stable readings, this method will attempt to take several 
+        readings and return the average distance. You can set the maximum time 
+        you want it to take before returning a result so you have control over 
+        how long this method ties up your program. It takes as many readings
+        up to the requested number of samples set as it can before the timeout 
+        total is reached. It then returns the average distance measured. Any 
+        readings where the single reading takes more than the timeout is 
+        ignored so these do not distort the average distance measured. If no 
+        valid readings are taken before the timeout then it returns zero.
 
-        # Wait for the ECHO pin to go high
-        # wait for the pulse rise
-        GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.RISING, timeout=timeout)
-        pulse_start = time.time()
+        You can choose parameters to get faster but less accurate readings or 
+        take longer to get more samples to average before it returns. The 
+        timeout effectively limits the maximum distance the sensor can measure 
+        because if the sound pusle takes longer to return over the distance 
+        than the timeout set then this method returns zero rather than waiting. 
+        So to extend the distance that can be measured, use a larger timeout.
+        """
 
-        # And wait for it to fall
-        GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.FALLING, timeout=timeout)
-        pulse_end = time.time()
+        # Start timing
+        start_time = time.perf_counter_ns()
+        time_elapsed = 0
+        count = 0 # Track now many samples taken
+        distance = 0
+        average_distance = -999
 
-        # get the duration, and convert
-        pulse_duration = pulse_end - pulse_start
-        distance = pulse_duration * self.SOUND_CONVERSION_FACTOR_MM
-        # return as an integer, sub mm don't matter
-        return int(distance)
+        # Loop until the timeout is exceeded or all samples have been taken
+        while (count < samples) and (time_elapsed < timeout * 1000000):
+            # Trigger
+            GPIO.output(self.ULTRA_TRIG, 1)
+            time.sleep(.00001) # 10 microseconds
+            GPIO.output(self.ULTRA_TRIG, 0)
+
+            # Wait for the ECHO pin to go high
+            # wait for the pulse rise
+            GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.RISING, timeout=timeout)
+            pulse_start = time.perf_counter_ns()
+
+            # And wait for it to fall
+            GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.FALLING, timeout=timeout)
+            pulse_end = time.perf_counter_ns()
+
+            # get the duration
+            pulse_duration = pulse_end - pulse_start - offset
+            if pulse_duration < 0:
+                pulse_duration = 0 #Prevent negative readings when offset was too high
+
+            # Only count reading if achieved in less than timeout total time
+            if pulse_duration < timeout * 1000000:
+                # Convert to distance and add to total
+                distance += pulse_duration * self.SOUND_CONVERSION_FACTOR_CM_NS
+                count += 1
+
+            time_elapsed = time.perf_counter_ns()-start_time
+        
+        # Calculate average distance in cm if any successful reading were made
+        if count > 0:
+            average_distance = distance/count
+        
+        return average_distance
 
 
 if __name__ == "__main__":
