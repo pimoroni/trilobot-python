@@ -1,5 +1,6 @@
 import trilobot
 import atexit
+import RPi.GPIO as GPIO
 
 
 tb = trilobot.Trilobot()
@@ -11,11 +12,14 @@ def off():
 
 atexit.register(off)
 
+GPIO.add_event_detect(tb.BUTTON_A, GPIO.RISING)
+
 # Start moving forward
 tb.set_left_speed(speed)
 tb.set_right_speed(speed)
 
-while True:
+
+while not GPIO.event_detected(tb.BUTTON_A):
     distance = tb.read_distance()
     # turn if we are too closer than 30cm
     if distance < 30:
