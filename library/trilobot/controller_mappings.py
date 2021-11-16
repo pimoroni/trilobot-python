@@ -93,7 +93,7 @@ def create_8bitdo_sn30_pro_controller():
 
 
 def create_rock_candy_controller():
-    controller = SimpleController("Performance Designed Products Rock Candy Wireless Gamepad for PS3")
+    controller = SimpleController("Performance Designed Products")
 
     # Button and axis registrations for Rock Candy PS3 Controller
     controller.register_button("Cross", 305, alt_name="A")
