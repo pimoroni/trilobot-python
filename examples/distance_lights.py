@@ -43,7 +43,7 @@ def colour_from_distance(distance):
             # Red for closest distance
             r = 255
 
-        print(r,g,b,distance)
+        #print(r,g,b,distance)
         return (r,g,b)
 
 if __name__ == '__main__':

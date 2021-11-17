@@ -52,8 +52,8 @@ class Trilobot():
     RIGHT_MOTOR = 1
     NUM_MOTORS = 2
 
-    # Half the speed of sound in cm/ns.
-    SOUND_CONVERSION_FACTOR_CM_NS = 0.00001715
+    # Speed of sound is 343m/s which we need in cm/ns for our distance measure.
+    SPEED_OF_SOUND_CM_NS = 343 * 100 / 1E9 # 0.0000343 cm / ns
 
 
     def __init__(self):
@@ -261,6 +261,7 @@ class Trilobot():
         timeout: total time in ms to try to get distance reading
         samples: determines how many readings to average
         offset: Time in ns the measurement takes (prevents over estimates)
+        The default offset here is about right for a Raspberry Pi 4.
         Returns the measured distance in centimetres as a float.
         
         To give more stable readings, this method will attempt to take several 
@@ -285,8 +286,8 @@ class Trilobot():
         start_time = time.perf_counter_ns()
         time_elapsed = 0
         count = 0 # Track now many samples taken
-        distance = 0
-        average_distance = -999
+        total_pulse_durations = 0
+        distance = -999
 
         # Loop until the timeout is exceeded or all samples have been taken
         while (count < samples) and (time_elapsed < timeout * 1000000):
@@ -312,16 +313,18 @@ class Trilobot():
             # Only count reading if achieved in less than timeout total time
             if pulse_duration < timeout * 1000000:
                 # Convert to distance and add to total
-                distance += pulse_duration * self.SOUND_CONVERSION_FACTOR_CM_NS
+                total_pulse_durations += pulse_duration
                 count += 1
 
             time_elapsed = time.perf_counter_ns()-start_time
         
         # Calculate average distance in cm if any successful reading were made
         if count > 0:
-            average_distance = distance/count
+            # Calculate distance using speed of sound divided by number of samples and half
+            # that as sound pulse travels from robot to obstacle and back (twice the distance)
+            distance = total_pulse_durations * self.SPEED_OF_SOUND_CM_NS / (2 * count)
         
-        return average_distance
+        return distance
 
 
 if __name__ == "__main__":
