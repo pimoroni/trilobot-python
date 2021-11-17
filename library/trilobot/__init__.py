@@ -46,11 +46,15 @@ class Trilobot():
     REAR_RIGHT = 4
     MIDDLE_RIGHT = 5
     NUM_UNDERLIGHTS = 6
- 
+
     # Motor names
     LEFT_MOTOR = 0
     RIGHT_MOTOR = 1
     NUM_MOTORS = 2
+
+    # Speed of sound is 343m/s which we need in cm/ns for our distance measure.
+    SPEED_OF_SOUND_CM_NS = 343 * 100 / 1E9 # 0.0000343 cm / ns
+
 
     def __init__(self):
         """Initialise trilobot
@@ -123,6 +127,10 @@ class Trilobot():
 
         GPIO.output(self.UNDERLIGHTING_EN, False)
         sn3218.output([128 for i in range(18)])
+
+        # setup ultrasonic sensor pins
+        GPIO.setup(self.ULTRA_TRIG, GPIO.OUT)
+        GPIO.setup(self.ULTRA_ECHO, GPIO.IN)
 
     def __del__(self):
         sn3218.disable()
@@ -278,6 +286,77 @@ class Trilobot():
     def curve_right(self,speed=1.0):
         self.set_motor_speed(self.LEFT_MOTOR, speed)
         self.set_motor_speed(self.RIGHT_MOTOR, 0)
+
+    def read_distance(self, timeout=50, samples=3, offset=190000):
+        """ Return a distance in cm from the ultrasound sensor.
+        timeout: total time in ms to try to get distance reading
+        samples: determines how many readings to average
+        offset: Time in ns the measurement takes (prevents over estimates)
+        The default offset here is about right for a Raspberry Pi 4.
+        Returns the measured distance in centimetres as a float.
+        
+        To give more stable readings, this method will attempt to take several 
+        readings and return the average distance. You can set the maximum time 
+        you want it to take before returning a result so you have control over 
+        how long this method ties up your program. It takes as many readings
+        up to the requested number of samples set as it can before the timeout 
+        total is reached. It then returns the average distance measured. Any 
+        readings where the single reading takes more than the timeout is 
+        ignored so these do not distort the average distance measured. If no 
+        valid readings are taken before the timeout then it returns zero.
+
+        You can choose parameters to get faster but less accurate readings or 
+        take longer to get more samples to average before it returns. The 
+        timeout effectively limits the maximum distance the sensor can measure 
+        because if the sound pusle takes longer to return over the distance 
+        than the timeout set then this method returns zero rather than waiting. 
+        So to extend the distance that can be measured, use a larger timeout.
+        """
+
+        # Start timing
+        start_time = time.perf_counter_ns()
+        time_elapsed = 0
+        count = 0 # Track now many samples taken
+        total_pulse_durations = 0
+        distance = -999
+
+        # Loop until the timeout is exceeded or all samples have been taken
+        while (count < samples) and (time_elapsed < timeout * 1000000):
+            # Trigger
+            GPIO.output(self.ULTRA_TRIG, 1)
+            time.sleep(.00001) # 10 microseconds
+            GPIO.output(self.ULTRA_TRIG, 0)
+
+            # Wait for the ECHO pin to go high
+            # wait for the pulse rise
+            GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.RISING, timeout=timeout)
+            pulse_start = time.perf_counter_ns()
+
+            # And wait for it to fall
+            GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.FALLING, timeout=timeout)
+            pulse_end = time.perf_counter_ns()
+
+            # get the duration
+            pulse_duration = pulse_end - pulse_start - offset
+            if pulse_duration < 0:
+                pulse_duration = 0 #Prevent negative readings when offset was too high
+
+            # Only count reading if achieved in less than timeout total time
+            if pulse_duration < timeout * 1000000:
+                # Convert to distance and add to total
+                total_pulse_durations += pulse_duration
+                count += 1
+
+            time_elapsed = time.perf_counter_ns()-start_time
+        
+        # Calculate average distance in cm if any successful reading were made
+        if count > 0:
+            # Calculate distance using speed of sound divided by number of samples and half
+            # that as sound pulse travels from robot to obstacle and back (twice the distance)
+            distance = total_pulse_durations * self.SPEED_OF_SOUND_CM_NS / (2 * count)
+        
+        return distance
+
 
 if __name__ == "__main__":
     trilobot = Trilobot()
