@@ -248,6 +248,36 @@ class Trilobot():
     def set_right_speed(self, speed):
         self.set_motor_speed(self.RIGHT_MOTOR, speed)
 
+    def stop(self):
+        self.set_motor_speed(self.LEFT_MOTOR, 0.0)
+        self.set_motor_speed(self.RIGHT_MOTOR, 0.0)
+
+    def coast(self):
+        self.disable_motors()
+
+    def forwards(self,speed=1.0):
+        self.set_motor_speed(self.LEFT_MOTOR, speed)
+        self.set_motor_speed(self.RIGHT_MOTOR, speed)
+
+    def reverse(self,speed=1.0):
+        self.set_motor_speed(self.LEFT_MOTOR, -speed)
+        self.set_motor_speed(self.RIGHT_MOTOR, -speed)
+
+    def turn_left(self,speed=1.0):
+        self.set_motor_speed(self.LEFT_MOTOR, -speed)
+        self.set_motor_speed(self.RIGHT_MOTOR, speed)
+
+    def turn_right(self,speed=1.0):
+        self.set_motor_speed(self.LEFT_MOTOR, speed)
+        self.set_motor_speed(self.RIGHT_MOTOR, -speed)
+
+    def curve_left(self,speed=1.0):
+        self.set_motor_speed(self.LEFT_MOTOR, 0)
+        self.set_motor_speed(self.RIGHT_MOTOR, speed)
+
+    def curve_right(self,speed=1.0):
+        self.set_motor_speed(self.LEFT_MOTOR, speed)
+        self.set_motor_speed(self.RIGHT_MOTOR, 0)
 
 if __name__ == "__main__":
     trilobot = Trilobot()
