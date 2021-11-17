@@ -56,10 +56,44 @@ def create_8bitdo_sn30_controller():
     controller.register_axis("LX", 0, 0, 256)
     controller.register_axis("LY", 1, 0, 256)
     return controller
+    
+def create_8bitdo_sn30_pro_controller():
+    controller = SimpleController("8BitDo SN30 Pro+")
+
+    # Button and axis registrations for 8BitDo SN30 Pro+
+    controller.register_button("A", 305, alt_name="Cross")
+    controller.register_button("B", 304, alt_name="Circle")
+    controller.register_button("X", 307, alt_name="Square")
+    controller.register_button("Y", 306, alt_name="Triangle")
+    controller.register_button("Plus", 311, alt_name="Start")
+    controller.register_button("Minus", 310, alt_name="Select")
+    controller.register_button("L1", 308, alt_name="LB")
+    controller.register_axis_as_button("L2", 2, 0, 1023, alt_name="LT")
+    controller.register_button("R1", 309, alt_name="RB")
+    controller.register_axis_as_button("R2", 5, 0, 1023, alt_name="RT")
+    controller.register_button("Home", 139)  
+    controller.register_axis_as_button("L_Left", 0, 0, 32768)
+    controller.register_axis_as_button("L_Right", 0, 65535, 32768)
+    controller.register_axis_as_button("L_Up", 1, 0, 32768)
+    controller.register_axis_as_button("L_Down", 1, 65535, 32768)
+    controller.register_axis_as_button("R_Left", 3, 0, 32768)
+    controller.register_axis_as_button("R_Right", 3, 65535, 32768)
+    controller.register_axis_as_button("R_Up", 4, 0, 32768)
+    controller.register_axis_as_button("R_Down", 4, 65535, 32768)    
+    controller.register_axis_as_button("Left", 16, -1, 0)
+    controller.register_axis_as_button("Right", 16, 1, 0)
+    controller.register_axis_as_button("Up", 17, -1, 0)
+    controller.register_axis_as_button("Down", 17, 1, 0)
+
+    controller.register_axis("LX", 0, 0, 65536)
+    controller.register_axis("LY", 1, 0, 65536)
+    controller.register_axis("RX", 3, 0, 65536)
+    controller.register_axis("RY", 4, 0, 65536)
+    return controller
 
 
 def create_rock_candy_controller():
-    controller = SimpleController("Performance Designed Products Rock Candy Wireless Gamepad for PS3")
+    controller = SimpleController("Performance Designed Products")
 
     # Button and axis registrations for Rock Candy PS3 Controller
     controller.register_button("Cross", 305, alt_name="A")

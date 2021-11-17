@@ -151,44 +151,63 @@ class Trilobot():
     def read_button(self, pin):
         return not GPIO.input(pin)
 
-    def set_underlighting(self, led, r=0, g=0, b=0):
+    def set_underlighting(self, led, r_color, g=None, b=None):
         if type(led) is not int:
             raise TypeError("led must be an integer")
 
         if led not in range(self.NUM_UNDERLIGHTS):
             raise ValueError("led must be an integer in the range 0 to 5")
 
-        if r < 0.0 or r > 1.0:
-            raise ValueError("r must be in the range 0.0 to 1.0")
+        if g is None and b is None:
+            # Treat r_color as a colour
 
-        if g < 0.0 or g > 1.0:
-            raise ValueError("g must be in the range 0.0 to 1.0")
+            if isinstance(r_color, str):
+                value = r_color.strip('#')
+                r_color = list(int(value[i:i+2], 16) for i in (0, 2, 4))
 
-        if b < 0.0 or b > 1.0:
-            raise ValueError("b must be in the range 0.0 to 1.0")
+            if isinstance(r_color, list) or isinstance(r_color, tuple):
+                if len(r_color) is not 3 or \
+                    (r_color[0] < 0 or r_color[0] > 255) or \
+                    (r_color[1] < 0 or r_color[1] > 255) or \
+                    (r_color[2] < 0 or r_color[2] > 255):
+                     raise ValueError("color must either be a color hex code, or a list/tuple of 3 numbers between 0 and 255")
 
-        self.underlight[(led * 3)] = int(r * 255)
-        self.underlight[(led * 3) + 1] = int(g * 255)
-        self.underlight[(led * 3) + 2] = int(b * 255)
+                self.underlight[(led * 3)] = int(r_color[0])
+                self.underlight[(led * 3) + 1] = int(r_color[1])
+                self.underlight[(led * 3) + 2] = int(r_color[2])
+            else:
+                raise ValueError("color must either be a color hex code, or a list/tuple of 3 numbers between 0 and 255")
+
+        else:
+            if r_color < 0 or r_color > 255:
+                raise ValueError("r must be in the range 0 to 255")
+
+            if g is None or g < 0 or g > 255:
+                raise ValueError("g must be in the range 0 to 255")
+
+            if b is None or b < 0 or b > 255:
+                raise ValueError("b must be in the range 0 to 255")
+
+            self.underlight[(led * 3)] = int(r_color)
+            self.underlight[(led * 3) + 1] = int(g)
+            self.underlight[(led * 3) + 2] = int(b)
+
+    def set_underlighting_hsv(self, led, h, s=1, v=1):
+        col = [i * 255 for i in hsv_to_rgb(h, s, v)]
+        self.set_underlighting(led, col)
+
+    def fill_underlighting(self, r_color, g=None, b=None):
+        for i in range(0, self.NUM_UNDERLIGHTS):
+            self.set_underlighting(i, r_color, g, b)
+
+    def fill_underlighting_hsv(self, h, s=1, v=1):
+        col = [i * 255 for i in hsv_to_rgb(h, s, v)]
+        for i in range(0, self.NUM_UNDERLIGHTS):
+            self.set_underlighting(i, col)
 
     def show_underlighting(self):
         sn3218.output(self.underlight)
         GPIO.output(self.UNDERLIGHTING_EN, True)
-
-    def fill_underlighting(self, r=0, g=0, b=0):
-        if r < 0.0 or r > 1.0:
-            raise ValueError("r must be in the range 0.0 to 1.0")
-
-        if g < 0.0 or g > 1.0:
-            raise ValueError("g must be in the range 0.0 to 1.0")
-
-        if b < 0.0 or b > 1.0:
-            raise ValueError("b must be in the range 0.0 to 1.0")
-
-        for led in range(self.NUM_UNDERLIGHTS):
-            self.underlight[(led * 3)] = int(r * 255)
-            self.underlight[(led * 3) + 1] = int(g * 255)
-            self.underlight[(led * 3) + 2] = int(b * 255)
 
     def disable_motors(self):
         GPIO.output(self.MOTOR_EN, False)
@@ -320,15 +339,15 @@ if __name__ == "__main__":
 
     for led in range(trilobot.NUM_UNDERLIGHTS):
         trilobot.fill_underlighting(0, 0, 0)
-        trilobot.set_underlighting(led, 1.0, 0, 0)
+        trilobot.set_underlighting(led, 255, 0, 0)
         trilobot.show_underlighting()
         time.sleep(0.1)
         trilobot.fill_underlighting(0, 0, 0)
-        trilobot.set_underlighting(led, 0, 1.0, 0)
+        trilobot.set_underlighting(led, 0, 255, 0)
         trilobot.show_underlighting()
         time.sleep(0.1)
         trilobot.fill_underlighting(0, 0, 0)
-        trilobot.set_underlighting(led, 0, 0, 1.0)
+        trilobot.set_underlighting(led, 0, 0, 255)
         trilobot.show_underlighting()
         time.sleep(0.1)
 
@@ -348,8 +367,7 @@ if __name__ == "__main__":
             led_h = h + (led * spacing)
             if led_h >= 1.0:
                 led_h -= 1.0
-            colour = hsv_to_rgb(led_h, 1, 1)
-            trilobot.set_underlighting(led, colour[0], colour[1], colour[2])
+            trilobot.set_underlighting_hsv(led, led_h, 1, 1)
 
         trilobot.show_underlighting()
         h += 0.5 / 360

@@ -81,7 +81,7 @@ class SimpleController():
     def __init__(self, controller_name):
         """Initialise SimpleController
         """
-        self.controller_name = controller_name
+        self.controller_to_find = controller_name
 
         self.controller = None
         self.last_attempt_time = 0
@@ -168,18 +168,21 @@ class SimpleController():
 
     def connect(self, debug=True):
         if debug:
-            print("Searching for '", self.controller_name, "'... ", sep="", end="")
+            print("Searching for '", self.controller_to_find, "'... ", sep="", end="")
 
         self.controller = None
         devices = [InputDevice(path) for path in list_devices()]
         for device in devices:
-            if device.name == self.controller_name:
+            if self.controller_to_find in device.name:
                 self.controller = device
                 break
 
         if debug:
             if self.controller:
-                print("connected")
+                if self.controller_to_find == self.controller.name:
+                    print("connected")
+                else:
+                    print("connected to '", self.controller.name, "'", sep="")
             else:
                 print("not found")
 
@@ -188,12 +191,15 @@ class SimpleController():
             currenttime = time.time()
             if currenttime - self.last_attempt_time >= time_between_attempts:
                 if debug:
-                    print("Attempting to reconnect to '", self.controller_name, "'... ", sep="", end="")
+                    print("Attempting to reconnect to '", self.controller_to_find, "'... ", sep="", end="")
                 self.connect(False)
                 self.last_attempt_time = currenttime
                 if debug:
                     if self.controller:
-                        print("reconnected")
+                        if self.controller_to_find == self.controller.name:
+                            print("reconnected")
+                        else:
+                            print("reconnected to '", self.controller.name, "'", sep="")
                     else:
                         print("not found")
 
@@ -205,7 +211,7 @@ class SimpleController():
         for axis in self.axes:
             axis.reset()
         if debug:
-            print("Disconnected from '", self.controller_name, "'", sep="")
+            print("Disconnected from '", self.controller_to_find, "'", sep="")
 
     def read_button(self, name):
         for button in self.buttons:
@@ -252,5 +258,5 @@ class SimpleController():
             except OSError:
                 self.disconnect(False)
                 if debug:
-                    print("Connection to '", self.controller_name, "' lost", sep="")
+                    print("Connection to '", self.controller_to_find, "' lost", sep="")
                 raise RuntimeError()
