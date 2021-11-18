@@ -150,7 +150,7 @@ def create_xbox360_wireless_controller(stick_deadzone_percent=0.2):
     return controller
 
 def create_ps4_wireless_controller(stick_deadzone_percent=0.1):
-    controller = SimpleController("Wireless Controller")
+    controller = SimpleController("Wireless Controller", exact_match=True)
 
     # Button and axis registrations for PS4 Controller
     controller.register_button("Cross", 304, alt_name="A")
@@ -179,3 +179,34 @@ def create_ps4_wireless_controller(stick_deadzone_percent=0.1):
     controller.register_trigger_axis("R2", 5, 0, 255, alt_name="RT")
     return controller
 
+def create_ps4_wireless_controller_touchpad():
+    controller = SimpleController("Wireless Controller Touchpad", exact_match=True)
+
+    # Button and axis registrations for PS4 Controller Touchpad
+    controller.register_button("Touch", 330)
+    controller.register_button("Finger", 325)
+    controller.register_button("Doubletap", 333)
+    controller.register_button("Click", 272, alt_name="A")
+
+    controller.register_axis("X", 0, 0, 1920, alt_name="LX")
+    controller.register_axis("Y", 1, 0, 942, alt_name="LY")
+
+    # Currently unhandled codes
+    # EV_ABS 57 Tracking ID
+    # EV_ABS 53 Position X
+    # EV_ABS 54 Position Y
+    # EV_ABS 47 Slot
+    return controller
+
+def create_ps4_wireless_controller_motion():
+    controller = SimpleController("Wireless Controller Motion Sensors", exact_match=True)
+
+    # Button and axis registrations for PS4 Controller Motion
+    controller.register_axis("X", 0, 8500, -8500, alt_name="LX")
+    controller.register_axis("Y", 1, 8500, -8500, alt_name="LY")
+    controller.register_axis("Z", 2, -8500, 8500)
+    controller.register_axis("RX", 3, -8500, 8500)
+    controller.register_axis("RY", 4, -8500, 8500)
+    controller.register_axis("RZ", 5, -8500, 8500)
+
+    return controller
