@@ -17,6 +17,7 @@ trilobot = Trilobot()
 # controller = controller_mappings.create_8bitdo_sn30_controller()
 # controller = controller_mappings.create_8bitdo_sn30_pro_controller()
 # controller = controller_mappings.create_rock_candy_controller()
+# controller = controller_mappings.create_ps4_wireless_controller()
 controller = controller_mappings.create_xbox360_wireless_controller()
 
 # Attempt to connect to the created controller
