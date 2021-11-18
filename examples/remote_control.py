@@ -17,6 +17,9 @@ trilobot = Trilobot()
 # controller = controller_mappings.create_8bitdo_sn30_controller()
 # controller = controller_mappings.create_8bitdo_sn30_pro_controller()
 # controller = controller_mappings.create_rock_candy_controller()
+# controller = controller_mappings.create_ps4_wireless_controller()
+# controller = controller_mappings.create_ps4_wireless_controller_touchpad()
+# controller = controller_mappings.create_ps4_wireless_controller_motion()
 controller = controller_mappings.create_xbox360_wireless_controller()
 
 # Attempt to connect to the created controller
@@ -64,9 +67,12 @@ while True:
             if led_h >= 1.0:
                 led_h -= 1.0
 
-            if controller.read_button("A"):
-                trilobot.set_underlighting_hsv(led, 0.0, 0.0, 0.7)
-            else:
+            try:
+                if controller.read_button("A"):
+                    trilobot.set_underlighting_hsv(led, 0.0, 0.0, 0.7)
+                else:
+                    trilobot.set_underlighting_hsv(led, led_h)
+            except ValueError:  # Cannot find 'A'
                 trilobot.set_underlighting_hsv(led, led_h)
 
         trilobot.show_underlighting()
