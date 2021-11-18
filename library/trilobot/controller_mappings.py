@@ -56,7 +56,8 @@ def create_8bitdo_sn30_controller():
     controller.register_axis("LX", 0, 0, 256)
     controller.register_axis("LY", 1, 0, 256)
     return controller
-    
+
+
 def create_8bitdo_sn30_pro_controller():
     controller = SimpleController("8BitDo SN30 Pro+")
 
@@ -71,7 +72,7 @@ def create_8bitdo_sn30_pro_controller():
     controller.register_axis_as_button("L2", 2, 0, 1023, alt_name="LT")
     controller.register_button("R1", 309, alt_name="RB")
     controller.register_axis_as_button("R2", 5, 0, 1023, alt_name="RT")
-    controller.register_button("Home", 139)  
+    controller.register_button("Home", 139)
     controller.register_axis_as_button("L_Left", 0, 0, 32768)
     controller.register_axis_as_button("L_Right", 0, 65535, 32768)
     controller.register_axis_as_button("L_Up", 1, 0, 32768)
@@ -79,7 +80,7 @@ def create_8bitdo_sn30_pro_controller():
     controller.register_axis_as_button("R_Left", 3, 0, 32768)
     controller.register_axis_as_button("R_Right", 3, 65535, 32768)
     controller.register_axis_as_button("R_Up", 4, 0, 32768)
-    controller.register_axis_as_button("R_Down", 4, 65535, 32768)    
+    controller.register_axis_as_button("R_Down", 4, 65535, 32768)
     controller.register_axis_as_button("Left", 16, -1, 0)
     controller.register_axis_as_button("Right", 16, 1, 0)
     controller.register_axis_as_button("Up", 17, -1, 0)
@@ -149,6 +150,7 @@ def create_xbox360_wireless_controller(stick_deadzone_percent=0.2):
     controller.register_trigger_axis("RT", 5, 0, 255, alt_name="R2")
     return controller
 
+
 def create_ps4_wireless_controller(stick_deadzone_percent=0.1):
     controller = SimpleController("Wireless Controller", exact_match=True)
 
@@ -179,6 +181,7 @@ def create_ps4_wireless_controller(stick_deadzone_percent=0.1):
     controller.register_trigger_axis("R2", 5, 0, 255, alt_name="RT")
     return controller
 
+
 def create_ps4_wireless_controller_touchpad():
     controller = SimpleController("Wireless Controller Touchpad", exact_match=True)
 
@@ -197,6 +200,7 @@ def create_ps4_wireless_controller_touchpad():
     # EV_ABS 54 Position Y
     # EV_ABS 47 Slot
     return controller
+
 
 def create_ps4_wireless_controller_motion():
     controller = SimpleController("Wireless Controller Motion Sensors", exact_match=True)
