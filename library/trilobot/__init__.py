@@ -7,54 +7,65 @@ from colorsys import hsv_to_rgb
 
 __version__ = '0.0.1'
 
+BUTTON_A = 0
+BUTTON_B = 1
+BUTTON_X = 2
+BUTTON_Y = 3
+NUM_BUTTONS = 4
+
+LED_A = 0
+LED_B = 1
+LED_X = 2
+LED_Y = 3
+NUM_LEDS = 4
+
+# Underlighting LED locations
+LIGHT_FRONT_RIGHT = 0
+LIGHT_FRONT_LEFT = 1
+LIGHT_MIDDLE_LEFT = 2
+LIGHT_REAR_LEFT = 3
+LIGHT_REAR_RIGHT = 4
+LIGHT_MIDDLE_RIGHT = 5
+NUM_UNDERLIGHTS = 6
+
+# Motor names
+MOTOR_LEFT = 0
+MOTOR_RIGHT = 1
+NUM_MOTORS = 2
+
 
 class Trilobot():
-    # User buttons
-    BUTTON_A = 5
-    BUTTON_B = 6
-    BUTTON_X = 16
-    BUTTON_Y = 24
+    # User button pins
+    BUTTON_A_PIN = 5
+    BUTTON_B_PIN = 6
+    BUTTON_X_PIN = 16
+    BUTTON_Y_PIN = 24
 
-    # Onboard LEDs next to each button
-    LED_A = 23
-    LED_B = 22
-    LED_X = 17
-    LED_Y = 27
+    # Onboard LEDs pins (next to each button)
+    LED_A_PIN = 23
+    LED_B_PIN = 22
+    LED_X_PIN = 17
+    LED_Y_PIN = 27
 
-    # Motor, via DRV8833PWP Dual H-Bridge
-    MOTOR_EN = 26
+    # Motor driver pins, via DRV8833PWP Dual H-Bridge
+    MOTOR_EN_PIN = 26
     MOTOR_LEFT_P = 11
     MOTOR_LEFT_N = 8
     MOTOR_RIGHT_P = 9
     MOTOR_RIGHT_N = 10
 
-    # HC-SR04 Ultrasound
-    ULTRA_TRIG = 13
-    ULTRA_ECHO = 25
+    # HC-SR04 Ultrasound pins
+    ULTRA_TRIG_PIN = 13
+    ULTRA_ECHO_PIN = 25
 
-    # Servo / WS2812
-    SERVO = 12
+    # Servo / WS2812 pin
+    SERVO_PIN = 12
 
-    # SN3218 LED Driver
-    UNDERLIGHTING_EN = 7
+    # SN3218 LED Driver pin
+    UNDERLIGHTING_EN_PIN = 7
 
-    # Underlighting LED locations
-    FRONT_RIGHT = 0
-    FRONT_LEFT = 1
-    MIDDLE_LEFT = 2
-    REAR_LEFT = 3
-    REAR_RIGHT = 4
-    MIDDLE_RIGHT = 5
-    NUM_UNDERLIGHTS = 6
-
-    # Motor names
-    LEFT_MOTOR = 0
-    RIGHT_MOTOR = 1
-    NUM_MOTORS = 2
-
-    # Speed of sound is 343m/s which we need in cm/ns for our distance measure.
-    SPEED_OF_SOUND_CM_NS = 343 * 100 / 1E9 # 0.0000343 cm / ns
-
+    # Speed of sound is 343m/s which we need in cm/ns for our distance measure
+    SPEED_OF_SOUND_CM_NS = 343 * 100 / 1E9  # 0.0000343 cm / ns
 
     def __init__(self):
         """Initialise trilobot
@@ -64,35 +75,37 @@ class Trilobot():
         GPIO.setmode(GPIO.BCM)
 
         # Setup user buttons
-        GPIO.setup(self.BUTTON_A, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.BUTTON_B, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.BUTTON_X, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.BUTTON_Y, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.BUTTON_A_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.BUTTON_B_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.BUTTON_X_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.BUTTON_Y_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        self.buttons = (self.BUTTON_A_PIN, self.BUTTON_B_PIN, self.BUTTON_X_PIN, self.BUTTON_Y_PIN)
 
         # Setup user LEDs
-        GPIO.setup(self.LED_A, GPIO.OUT)
-        GPIO.setup(self.LED_B, GPIO.OUT)
-        GPIO.setup(self.LED_X, GPIO.OUT)
-        GPIO.setup(self.LED_Y, GPIO.OUT)
+        GPIO.setup(self.LED_A_PIN, GPIO.OUT)
+        GPIO.setup(self.LED_B_PIN, GPIO.OUT)
+        GPIO.setup(self.LED_X_PIN, GPIO.OUT)
+        GPIO.setup(self.LED_Y_PIN, GPIO.OUT)
+        self.leds = (self.LED_A_PIN, self.LED_B_PIN, self.LED_X_PIN, self.LED_Y_PIN)
 
-        led_a_pwm = GPIO.PWM(self.LED_A, 2000)
+        led_a_pwm = GPIO.PWM(self.LED_A_PIN, 2000)
         led_a_pwm.start(0)
 
-        led_b_pwm = GPIO.PWM(self.LED_B, 2000)
+        led_b_pwm = GPIO.PWM(self.LED_B_PIN, 2000)
         led_b_pwm.start(0)
 
-        led_x_pwm = GPIO.PWM(self.LED_X, 2000)
+        led_x_pwm = GPIO.PWM(self.LED_X_PIN, 2000)
         led_x_pwm.start(0)
 
-        led_y_pwm = GPIO.PWM(self.LED_Y, 2000)
+        led_y_pwm = GPIO.PWM(self.LED_Y_PIN, 2000)
         led_y_pwm.start(0)
-        self.led_pwm_mapping = {self.LED_A: led_a_pwm,
-                                self.LED_B: led_b_pwm,
-                                self.LED_X: led_x_pwm,
-                                self.LED_Y: led_y_pwm}
+        self.led_pwm_mapping = {self.LED_A_PIN: led_a_pwm,
+                                self.LED_B_PIN: led_b_pwm,
+                                self.LED_X_PIN: led_x_pwm,
+                                self.LED_Y_PIN: led_y_pwm}
 
         # Setup motor driver
-        GPIO.setup(self.MOTOR_EN, GPIO.OUT)
+        GPIO.setup(self.MOTOR_EN_PIN, GPIO.OUT)
         GPIO.setup(self.MOTOR_LEFT_P, GPIO.OUT)
         GPIO.setup(self.MOTOR_LEFT_N, GPIO.OUT)
         GPIO.setup(self.MOTOR_RIGHT_P, GPIO.OUT)
@@ -114,8 +127,8 @@ class Trilobot():
                                   self.MOTOR_RIGHT_P: motor_right_p_pwm,
                                   self.MOTOR_RIGHT_N: motor_right_n_pwm}
 
-        GPIO.setup(self.UNDERLIGHTING_EN, GPIO.OUT)
-        GPIO.output(self.UNDERLIGHTING_EN, False)
+        GPIO.setup(self.UNDERLIGHTING_EN_PIN, GPIO.OUT)
+        GPIO.output(self.UNDERLIGHTING_EN_PIN, False)
 
         sn3218.reset()
 
@@ -125,19 +138,42 @@ class Trilobot():
 
         self.underlight = [0 for i in range(18)]
 
-        GPIO.output(self.UNDERLIGHTING_EN, False)
+        GPIO.output(self.UNDERLIGHTING_EN_PIN, False)
         sn3218.output([128 for i in range(18)])
 
         # setup ultrasonic sensor pins
-        GPIO.setup(self.ULTRA_TRIG, GPIO.OUT)
-        GPIO.setup(self.ULTRA_ECHO, GPIO.IN)
+        GPIO.setup(self.ULTRA_TRIG_PIN, GPIO.OUT)
+        GPIO.setup(self.ULTRA_ECHO_PIN, GPIO.IN)
 
     def __del__(self):
         sn3218.disable()
         GPIO.cleanup()
 
-    def set_led(self, pin, value):
-        pwm = self.led_pwm_mapping[pin]
+    ###########
+    # Buttons #
+    ###########
+    def read_button(self, button):
+        if type(button) is not int:
+            raise TypeError("button must be an integer")
+
+        if button not in range(NUM_BUTTONS):
+            raise ValueError("""button must be an integer in the range 0 to 3. For convenience, use the constants:
+                BUTTON_A (0), BUTTON_B (1), BUTTON_X (2), or BUTTON_Y (3)""")
+
+        return not GPIO.input(self.buttons[button])
+
+    ########
+    # LEDs #
+    ########
+    def set_led(self, led, value):
+        if type(led) is not int:
+            raise TypeError("led must be an integer")
+
+        if led not in range(NUM_LEDS):
+            raise ValueError("""led must be an integer in the range 0 to 3. For convenience, use the constants:
+                LED_A (0), LED_B (1), LED_X (2), or LED_Y (3)""")
+
+        pwm = self.led_pwm_mapping[self.leds[led]]
         if isinstance(value, bool):
             if value:
                 pwm.ChangeDutyCycle(100)
@@ -148,88 +184,21 @@ class Trilobot():
         else:
             pwm.ChangeDutyCycle(value * 100)
 
-    def read_button(self, pin):
-        return not GPIO.input(pin)
-
-    def set_underlighting(self, led, r_color, g=None, b=None):
-        if type(led) is not int:
-            raise TypeError("led must be an integer")
-
-        if led not in range(self.NUM_UNDERLIGHTS):
-            raise ValueError("led must be an integer in the range 0 to 5")
-
-        if g is None and b is None:
-            # Treat r_color as a colour
-
-            if isinstance(r_color, str):
-                value = r_color.strip('#')
-                r_color = list(int(value[i:i+2], 16) for i in (0, 2, 4))
-
-            if isinstance(r_color, list) or isinstance(r_color, tuple):
-                if len(r_color) is not 3 or \
-                    (r_color[0] < 0 or r_color[0] > 255) or \
-                    (r_color[1] < 0 or r_color[1] > 255) or \
-                    (r_color[2] < 0 or r_color[2] > 255):
-                     raise ValueError("color must either be a color hex code, or a list/tuple of 3 numbers between 0 and 255")
-
-                self.underlight[(led * 3)] = int(r_color[0])
-                self.underlight[(led * 3) + 1] = int(r_color[1])
-                self.underlight[(led * 3) + 2] = int(r_color[2])
-            else:
-                raise ValueError("color must either be a color hex code, or a list/tuple of 3 numbers between 0 and 255")
-
-        else:
-            if r_color < 0 or r_color > 255:
-                raise ValueError("r must be in the range 0 to 255")
-
-            if g is None or g < 0 or g > 255:
-                raise ValueError("g must be in the range 0 to 255")
-
-            if b is None or b < 0 or b > 255:
-                raise ValueError("b must be in the range 0 to 255")
-
-            self.underlight[(led * 3)] = int(r_color)
-            self.underlight[(led * 3) + 1] = int(g)
-            self.underlight[(led * 3) + 2] = int(b)
-
-    def set_underlighting_hsv(self, led, h, s=1, v=1):
-        col = [i * 255 for i in hsv_to_rgb(h, s, v)]
-        self.set_underlighting(led, col)
-
-    def fill_underlighting(self, r_color, g=None, b=None):
-        for i in range(0, self.NUM_UNDERLIGHTS):
-            self.set_underlighting(i, r_color, g, b)
-
-    def fill_underlighting_hsv(self, h, s=1, v=1):
-        col = [i * 255 for i in hsv_to_rgb(h, s, v)]
-        for i in range(0, self.NUM_UNDERLIGHTS):
-            self.set_underlighting(i, col)
-
-    def show_underlighting(self):
-        sn3218.output(self.underlight)
-        GPIO.output(self.UNDERLIGHTING_EN, True)
-
-    def disable_motors(self):
-        GPIO.output(self.MOTOR_EN, False)
-        self.motor_pwm_mapping[self.MOTOR_LEFT_P].ChangeDutyCycle(0)
-        self.motor_pwm_mapping[self.MOTOR_LEFT_N].ChangeDutyCycle(0)
-        self.motor_pwm_mapping[self.MOTOR_RIGHT_P].ChangeDutyCycle(0)
-        self.motor_pwm_mapping[self.MOTOR_RIGHT_N].ChangeDutyCycle(0)
-
+    ##########
+    # Motors #
+    ##########
     def set_motor_speed(self, motor, speed):
         if type(motor) is not int:
             raise TypeError("motor must be an integer")
 
         if motor not in range(2):
-            raise ValueError("motor must be an integer in the range 0 to 1")
+            raise ValueError("""motor must be an integer in the range 0 to 1. For convenience, use the constants:
+                MOTOR_LEFT (0), or MOTOR_RIGHT (1)""")
 
-        #Limit the speed value rather than throw a value exception
-        if speed < -1.0:
-            speed = -1.0
-        elif speed > 1.0:
-            speed = 1.0
+        # Limit the speed value rather than throw a value exception
+        speed = max(min(speed, 1.0), -1.0)
 
-        GPIO.output(self.MOTOR_EN, True)
+        GPIO.output(self.MOTOR_EN_PIN, True)
         pwm_p = None
         pwm_n = None
         if motor == 0:
@@ -250,43 +219,203 @@ class Trilobot():
             pwm_p.ChangeDutyCycle(100)
             pwm_n.ChangeDutyCycle(100)
 
+    def set_motor_speeds(self, l_speed, r_speed):
+        self.set_motor_speed(MOTOR_LEFT, l_speed)
+        self.set_motor_speed(MOTOR_RIGHT, r_speed)
+
     def set_left_speed(self, speed):
-        self.set_motor_speed(self.LEFT_MOTOR, speed)
+        self.set_motor_speed(MOTOR_LEFT, speed)
 
     def set_right_speed(self, speed):
-        self.set_motor_speed(self.RIGHT_MOTOR, speed)
+        self.set_motor_speed(MOTOR_RIGHT, speed)
+
+    def disable_motors(self):
+        GPIO.output(self.MOTOR_EN_PIN, False)
+        self.motor_pwm_mapping[self.MOTOR_LEFT_P].ChangeDutyCycle(0)
+        self.motor_pwm_mapping[self.MOTOR_LEFT_N].ChangeDutyCycle(0)
+        self.motor_pwm_mapping[self.MOTOR_RIGHT_P].ChangeDutyCycle(0)
+        self.motor_pwm_mapping[self.MOTOR_RIGHT_N].ChangeDutyCycle(0)
+
+    #################
+    # Motor Helpers #
+    #################
+
+    def forward(self, speed=1.0):
+        self.set_motor_speeds(speed, speed)
+
+    def backward(self, speed=1.0):
+        self.set_motor_speeds(-speed, -speed)
+
+    def turn_left(self, speed=1.0):
+        self.set_motor_speeds(-speed, speed)
+
+    def turn_right(self, speed=1.0):
+        self.set_motor_speeds(speed, -speed)
+
+    def curve_forward_left(self, speed=1.0):
+        self.set_motor_speeds(0.0, speed)
+
+    def curve_forward_right(self, speed=1.0):
+        self.set_motor_speeds(speed, 0.0)
+
+    def curve_backward_left(self, speed=1.0):
+        self.set_motor_speeds(0.0, -speed)
+
+    def curve_backward_right(self, speed=1.0):
+        self.set_motor_speeds(-speed, 0.0)
 
     def stop(self):
-        self.set_motor_speed(self.LEFT_MOTOR, 0.0)
-        self.set_motor_speed(self.RIGHT_MOTOR, 0.0)
+        self.set_motor_speeds(0.0, 0.0)
 
     def coast(self):
         self.disable_motors()
 
-    def forwards(self,speed=1.0):
-        self.set_motor_speed(self.LEFT_MOTOR, speed)
-        self.set_motor_speed(self.RIGHT_MOTOR, speed)
+    #################
+    # Underlighting #
+    #################
+    def show_underlighting(self):
+        sn3218.output(self.underlight)
+        GPIO.output(self.UNDERLIGHTING_EN_PIN, True)
 
-    def reverse(self,speed=1.0):
-        self.set_motor_speed(self.LEFT_MOTOR, -speed)
-        self.set_motor_speed(self.RIGHT_MOTOR, -speed)
+    def set_underlight(self, light, r_color, g=None, b=None, show=True):
+        if type(light) is not int:
+            raise TypeError("light must be an integer")
 
-    def turn_left(self,speed=1.0):
-        self.set_motor_speed(self.LEFT_MOTOR, -speed)
-        self.set_motor_speed(self.RIGHT_MOTOR, speed)
+        if light not in range(NUM_UNDERLIGHTS):
+            raise ValueError("""light must be an integer in the range 0 to 5. For convenience, use the constants:
+                LIGHT_FRONT_RIGHT (0), LIGHT_FRONT_LEFT (1), LIGHT_MIDDLE_LEFT (2), LIGHT_REAR_LEFT (3), LIGHT_REAR_RIGHT (4), or LIGHT_MIDDLE_RIGHT (5)""")
 
-    def turn_right(self,speed=1.0):
-        self.set_motor_speed(self.LEFT_MOTOR, speed)
-        self.set_motor_speed(self.RIGHT_MOTOR, -speed)
+        if g is None and b is None:
+            # Treat r_color as a colour
 
-    def curve_left(self,speed=1.0):
-        self.set_motor_speed(self.LEFT_MOTOR, 0)
-        self.set_motor_speed(self.RIGHT_MOTOR, speed)
+            if isinstance(r_color, str):
+                value = r_color.strip('#')
+                r_color = list(int(value[i:i + 2], 16) for i in (0, 2, 4))
 
-    def curve_right(self,speed=1.0):
-        self.set_motor_speed(self.LEFT_MOTOR, speed)
-        self.set_motor_speed(self.RIGHT_MOTOR, 0)
+            if isinstance(r_color, list) or isinstance(r_color, tuple):
+                if len(r_color) != 3 or \
+                        (r_color[0] < 0 or r_color[0] > 255) or \
+                        (r_color[1] < 0 or r_color[1] > 255) or \
+                        (r_color[2] < 0 or r_color[2] > 255):
+                    raise ValueError("color must either be a color hex code, or a list/tuple of 3 numbers between 0 and 255")
 
+                self.underlight[(light * 3)] = int(r_color[0])
+                self.underlight[(light * 3) + 1] = int(r_color[1])
+                self.underlight[(light * 3) + 2] = int(r_color[2])
+            else:
+                raise ValueError("color must either be a color hex code, or a list/tuple of 3 numbers between 0 and 255")
+
+        else:
+            if r_color < 0 or r_color > 255:
+                raise ValueError("r must be in the range 0 to 255")
+
+            if g is None or g < 0 or g > 255:
+                raise ValueError("g must be in the range 0 to 255")
+
+            if b is None or b < 0 or b > 255:
+                raise ValueError("b must be in the range 0 to 255")
+
+            self.underlight[(light * 3)] = int(r_color)
+            self.underlight[(light * 3) + 1] = int(g)
+            self.underlight[(light * 3) + 2] = int(b)
+
+        if show:
+            self.show_underlighting()
+
+    def set_underlight_hsv(self, light, h, s=1, v=1, show=True):
+        color = [i * 255 for i in hsv_to_rgb(h, s, v)]
+        self.set_underlight(light, color, show=show)
+
+    def fill_underlighting(self, r_color, g=None, b=None, show=True):
+        for i in range(0, NUM_UNDERLIGHTS):
+            self.set_underlight(i, r_color, g, b, show=False)
+        if show:
+            self.show_underlighting()
+
+    def fill_underlighting_hsv(self, h, s=1, v=1, show=True):
+        color = [i * 255 for i in hsv_to_rgb(h, s, v)]
+        for i in range(0, NUM_UNDERLIGHTS):
+            self.set_underlight(i, color, show=False)
+        if show:
+            self.show_underlighting()
+
+    def clear_underlight(self, light, show=True):
+        self.set_underlight(light, 0, 0, 0, show=show)
+
+    def clear_underlighting(self, show=True):
+        self.fill_underlighting(0, 0, 0, show=show)
+
+    #########################
+    # Underlighting Helpers #
+    #########################
+
+    def set_left_underlights(self, r_color, g=None, b=None, show=True):
+        self.set_underlight(LIGHT_FRONT_LEFT, r_color, g, b, show=False)
+        self.set_underlight(LIGHT_MIDDLE_LEFT, r_color, g, b, show=False)
+        self.set_underlight(LIGHT_REAR_LEFT, r_color, g, b, show=show)
+
+    def set_left_underlights_hsv(self, h, s=1, v=1, show=True):
+        color = [i * 255 for i in hsv_to_rgb(h, s, v)]
+        self.set_underlight(LIGHT_FRONT_LEFT, color, show=False)
+        self.set_underlight(LIGHT_MIDDLE_LEFT, color, show=False)
+        self.set_underlight(LIGHT_REAR_LEFT, color, show=show)
+
+    def set_right_underlights(self, r_color, g=None, b=None, show=True):
+        self.set_underlight(LIGHT_FRONT_RIGHT, r_color, g, b, show=False)
+        self.set_underlight(LIGHT_MIDDLE_RIGHT, r_color, g, b, show=False)
+        self.set_underlight(LIGHT_REAR_RIGHT, r_color, g, b, show=show)
+
+    def set_right_underlights_hsv(self, h, s=1, v=1, show=True):
+        color = [i * 255 for i in hsv_to_rgb(h, s, v)]
+        self.set_underlight(LIGHT_FRONT_RIGHT, color, show=False)
+        self.set_underlight(LIGHT_MIDDLE_RIGHT, color, show=False)
+        self.set_underlight(LIGHT_REAR_RIGHT, color, show=show)
+
+    def set_front_underlights(self, r_color, g=None, b=None, show=True):
+        self.set_underlight(LIGHT_FRONT_LEFT, r_color, g, b, show=False)
+        self.set_underlight(LIGHT_FRONT_RIGHT, r_color, g, b, show=show)
+
+    def set_front_underlights_hsv(self, h, s=1, v=1, show=True):
+        color = [i * 255 for i in hsv_to_rgb(h, s, v)]
+        self.set_underlight(LIGHT_FRONT_LEFT, color, show=False)
+        self.set_underlight(LIGHT_FRONT_RIGHT, color, show=show)
+
+    def set_middle_underlights(self, r_color, g=None, b=None, show=True):
+        self.set_underlight(LIGHT_MIDDLE_LEFT, r_color, g, b, show=False)
+        self.set_underlight(LIGHT_MIDDLE_RIGHT, r_color, g, b, show=show)
+
+    def set_middle_underlights_hsv(self, h, s=1, v=1, show=True):
+        color = [i * 255 for i in hsv_to_rgb(h, s, v)]
+        self.set_underlight(LIGHT_MIDDLE_LEFT, color, show=False)
+        self.set_underlight(LIGHT_MIDDLE_RIGHT, color, show=show)
+
+    def set_rear_underlights(self, r_color, g=None, b=None, show=True):
+        self.set_underlight(LIGHT_REAR_LEFT, r_color, g, b, show=False)
+        self.set_underlight(LIGHT_REAR_RIGHT, r_color, g, b, show=show)
+
+    def set_rear_underlights_hsv(self, h, s=1, v=1, show=True):
+        color = [i * 255 for i in hsv_to_rgb(h, s, v)]
+        self.set_underlight(LIGHT_REAR_LEFT, color, show=False)
+        self.set_underlight(LIGHT_REAR_RIGHT, color, show=show)
+
+    def clear_left_underlights(self, show=True):
+        self.set_left_underlights(0, 0, 0, show=show)
+
+    def clear_right_underlights(self, show=True):
+        self.set_right_underlights(0, 0, 0, show=show)
+
+    def clear_front_underlights(self, show=True):
+        self.set_front_underlights(0, 0, 0, show=show)
+
+    def clear_middle_underlights(self, show=True):
+        self.set_middle_underlights(0, 0, 0, show=show)
+
+    def clear_rear_underlights(self, show=True):
+        self.set_rear_underlights(0, 0, 0, show=show)
+
+    ##############
+    # Ultrasound #
+    ##############
     def read_distance(self, timeout=50, samples=3, offset=190000):
         """ Return a distance in cm from the ultrasound sensor.
         timeout: total time in ms to try to get distance reading
@@ -294,52 +423,52 @@ class Trilobot():
         offset: Time in ns the measurement takes (prevents over estimates)
         The default offset here is about right for a Raspberry Pi 4.
         Returns the measured distance in centimetres as a float.
-        
-        To give more stable readings, this method will attempt to take several 
-        readings and return the average distance. You can set the maximum time 
-        you want it to take before returning a result so you have control over 
+
+        To give more stable readings, this method will attempt to take several
+        readings and return the average distance. You can set the maximum time
+        you want it to take before returning a result so you have control over
         how long this method ties up your program. It takes as many readings
-        up to the requested number of samples set as it can before the timeout 
-        total is reached. It then returns the average distance measured. Any 
-        readings where the single reading takes more than the timeout is 
-        ignored so these do not distort the average distance measured. If no 
+        up to the requested number of samples set as it can before the timeout
+        total is reached. It then returns the average distance measured. Any
+        readings where the single reading takes more than the timeout is
+        ignored so these do not distort the average distance measured. If no
         valid readings are taken before the timeout then it returns zero.
 
-        You can choose parameters to get faster but less accurate readings or 
-        take longer to get more samples to average before it returns. The 
-        timeout effectively limits the maximum distance the sensor can measure 
-        because if the sound pusle takes longer to return over the distance 
-        than the timeout set then this method returns zero rather than waiting. 
+        You can choose parameters to get faster but less accurate readings or
+        take longer to get more samples to average before it returns. The
+        timeout effectively limits the maximum distance the sensor can measure
+        because if the sound pusle takes longer to return over the distance
+        than the timeout set then this method returns zero rather than waiting.
         So to extend the distance that can be measured, use a larger timeout.
         """
 
         # Start timing
         start_time = time.perf_counter_ns()
         time_elapsed = 0
-        count = 0 # Track now many samples taken
+        count = 0  # Track now many samples taken
         total_pulse_durations = 0
         distance = -999
 
         # Loop until the timeout is exceeded or all samples have been taken
         while (count < samples) and (time_elapsed < timeout * 1000000):
             # Trigger
-            GPIO.output(self.ULTRA_TRIG, 1)
-            time.sleep(.00001) # 10 microseconds
-            GPIO.output(self.ULTRA_TRIG, 0)
+            GPIO.output(self.ULTRA_TRIG_PIN, 1)
+            time.sleep(.00001)  # 10 microseconds
+            GPIO.output(self.ULTRA_TRIG_PIN, 0)
 
             # Wait for the ECHO pin to go high
             # wait for the pulse rise
-            GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.RISING, timeout=timeout)
+            GPIO.wait_for_edge(self.ULTRA_ECHO_PIN, GPIO.RISING, timeout=timeout)
             pulse_start = time.perf_counter_ns()
 
             # And wait for it to fall
-            GPIO.wait_for_edge(self.ULTRA_ECHO, GPIO.FALLING, timeout=timeout)
+            GPIO.wait_for_edge(self.ULTRA_ECHO_PIN, GPIO.FALLING, timeout=timeout)
             pulse_end = time.perf_counter_ns()
 
             # get the duration
             pulse_duration = pulse_end - pulse_start - offset
             if pulse_duration < 0:
-                pulse_duration = 0 #Prevent negative readings when offset was too high
+                pulse_duration = 0  # Prevent negative readings when offset was too high
 
             # Only count reading if achieved in less than timeout total time
             if pulse_duration < timeout * 1000000:
@@ -347,91 +476,99 @@ class Trilobot():
                 total_pulse_durations += pulse_duration
                 count += 1
 
-            time_elapsed = time.perf_counter_ns()-start_time
-        
+            time_elapsed = time.perf_counter_ns() - start_time
+
         # Calculate average distance in cm if any successful reading were made
         if count > 0:
             # Calculate distance using speed of sound divided by number of samples and half
             # that as sound pulse travels from robot to obstacle and back (twice the distance)
             distance = total_pulse_durations * self.SPEED_OF_SOUND_CM_NS / (2 * count)
-        
+
         return distance
+
+    #########
+    # Servo #
+    #########
+    def set_servo():
+        pass
+
+    def disable_servo():
+        pass
+
+    def set_servo_calibration():
+        pass
 
 
 if __name__ == "__main__":
-    trilobot = Trilobot()
+    tbot = Trilobot()
 
     print("Trilobot Function Test")
 
     time.sleep(2.0)
     for i in range(0, 10):
         print(i)
-        GPIO.output(trilobot.UNDERLIGHTING_EN, True)
+        GPIO.output(tbot.UNDERLIGHTING_EN_PIN, True)
         time.sleep(0.1)
-        GPIO.output(trilobot.UNDERLIGHTING_EN, False)
-        time.sleep(0.1)
-
-    for led in range(trilobot.NUM_UNDERLIGHTS):
-        trilobot.fill_underlighting(0, 0, 0)
-        trilobot.set_underlighting(led, 255, 0, 0)
-        trilobot.show_underlighting()
-        time.sleep(0.1)
-        trilobot.fill_underlighting(0, 0, 0)
-        trilobot.set_underlighting(led, 0, 255, 0)
-        trilobot.show_underlighting()
-        time.sleep(0.1)
-        trilobot.fill_underlighting(0, 0, 0)
-        trilobot.set_underlighting(led, 0, 0, 255)
-        trilobot.show_underlighting()
+        GPIO.output(tbot.UNDERLIGHTING_EN_PIN, False)
         time.sleep(0.1)
 
-    trilobot.fill_underlighting(0, 0, 0)
-    trilobot.show_underlighting()
+    for led in range(NUM_UNDERLIGHTS):
+        tbot.clear_underlighting(show=False)
+        tbot.set_underlight(led, 255, 0, 0)
+        time.sleep(0.1)
+        tbot.clear_underlighting(show=False)
+        tbot.set_underlight(led, 0, 255, 0)
+        time.sleep(0.1)
+        tbot.clear_underlighting(show=False)
+        tbot.set_underlight(led, 0, 0, 255)
+        time.sleep(0.1)
+
+    tbot.clear_underlighting()
 
     h = 0
     v = 0
-    spacing = 1.0 / trilobot.NUM_UNDERLIGHTS
+    spacing = 1.0 / NUM_UNDERLIGHTS
 
     a = 0
     b = 0
     x = 0
     y = 0
     while True:
-        for led in range(trilobot.NUM_UNDERLIGHTS):
+        for led in range(NUM_UNDERLIGHTS):
             led_h = h + (led * spacing)
             if led_h >= 1.0:
                 led_h -= 1.0
-            trilobot.set_underlighting_hsv(led, led_h, 1, 1)
+            tbot.set_underlight_hsv(led, led_h, 1, 1, show=False)
 
-        trilobot.show_underlighting()
+        tbot.show_underlighting()
         h += 0.5 / 360
         if h >= 1.0:
             h -= 1.0
 
-        if trilobot.read_button(trilobot.BUTTON_A):
+        if tbot.read_button(BUTTON_A):
             a = min(a + 0.01, 1.0)
         else:
             a = max(a - 0.01, 0.0)
-        trilobot.set_led(trilobot.LED_A, a)
+        tbot.set_led(LED_A, a)
 
-        if trilobot.read_button(trilobot.BUTTON_B):
+        if tbot.read_button(BUTTON_B):
             b = min(b + 0.01, 1.0)
         else:
             b = max(b - 0.01, 0.0)
-        trilobot.set_led(trilobot.LED_B, b)
+        tbot.set_led(LED_B, b)
 
-        if trilobot.read_button(trilobot.BUTTON_X):
+        if tbot.read_button(BUTTON_X):
             x = min(x + 0.01, 1.0)
         else:
             x = max(x - 0.01, 0.0)
-        trilobot.set_led(trilobot.LED_X, x)
+        tbot.set_led(LED_X, x)
 
-        if trilobot.read_button(trilobot.BUTTON_Y):
+        if tbot.read_button(BUTTON_Y):
             y = min(y + 0.01, 1.0)
         else:
             y = max(y - 0.01, 0.0)
-        trilobot.set_led(trilobot.LED_Y, y)
+        tbot.set_led(LED_Y, y)
 
-        trilobot.set_left_speed(a - b)
-        trilobot.set_right_speed(x - y)
+        tbot.set_left_speed(a - b)
+        tbot.set_right_speed(x - y)
         time.sleep(0.01)

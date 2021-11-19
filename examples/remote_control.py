@@ -2,12 +2,16 @@
 
 import time
 import math
-from colorsys import hsv_to_rgb
-from trilobot import Trilobot, controller_mappings
+from trilobot import *
+from trilobot import controller_mappings
 
 print("Trilobot Remote Control Demo\n")
 
-trilobot = Trilobot()
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+
+tbot = Trilobot()
 
 #
 # Uncomment one of the lines below to use one of the existing controller
@@ -25,26 +29,22 @@ controller = controller_mappings.create_xbox360_wireless_controller()
 # Attempt to connect to the created controller
 controller.connect()
 
-for led in range(trilobot.NUM_UNDERLIGHTS):
-    trilobot.fill_underlighting(0, 0, 0)
-    trilobot.set_underlighting(led, 255, 0, 0)
-    trilobot.show_underlighting()
+for led in range(NUM_UNDERLIGHTS):
+    tbot.clear_underlighting(show=False)
+    tbot.set_underlight(led, RED)
     time.sleep(0.1)
-    trilobot.fill_underlighting(0, 0, 0)
-    trilobot.set_underlighting(led, 0, 255, 0)
-    trilobot.show_underlighting()
+    tbot.clear_underlighting(show=False)
+    tbot.set_underlight(led, GREEN)
     time.sleep(0.1)
-    trilobot.fill_underlighting(0, 0, 0)
-    trilobot.set_underlighting(led, 0, 0, 255)
-    trilobot.show_underlighting()
+    tbot.clear_underlighting(show=False)
+    tbot.set_underlight(led, BLUE)
     time.sleep(0.1)
 
-trilobot.fill_underlighting(0, 0, 0)
-trilobot.show_underlighting()
+tbot.clear_underlighting()
 
 h = 0
 v = 0
-spacing = 1.0 / trilobot.NUM_UNDERLIGHTS
+spacing = 1.0 / NUM_UNDERLIGHTS
 
 tank_steer = False
 
@@ -61,10 +61,10 @@ while True:
     try:
         controller.update()
     except RuntimeError:
-        trilobot.disable_motors()
+        tbot.disable_motors()
 
     if controller.is_connected():
-        for led in range(trilobot.NUM_UNDERLIGHTS):
+        for led in range(NUM_UNDERLIGHTS):
             led_h = h + (led * spacing)
             if led_h >= 1.0:
                 led_h -= 1.0
@@ -81,13 +81,13 @@ while True:
 
             try:
                 if controller.read_button("A"):
-                    trilobot.set_underlighting_hsv(led, 0.0, 0.0, 0.7)
+                    tbot.set_underlight_hsv(led, 0.0, 0.0, 0.7, show=False)
                 else:
-                    trilobot.set_underlighting_hsv(led, led_h)
+                    tbot.set_underlight_hsv(led, led_h, show=False)
             except ValueError:  # Cannot find 'A'
-                trilobot.set_underlighting_hsv(led, led_h)
+                tbot.set_underlight_hsv(led, led_h, show=False)
 
-        trilobot.show_underlighting()
+        tbot.show_underlighting()
         h += 0.5 / 360
         if h >= 1.0:
             h -= 1.0
@@ -95,46 +95,45 @@ while True:
         if tank_steer:
             ly = controller.read_axis("LY")
             ry = controller.read_axis("RY")
-            trilobot.set_left_speed(-ly)
-            trilobot.set_right_speed(-ry)
+            tbot.set_left_speed(-ly)
+            tbot.set_right_speed(-ry)
         else:
             lx = controller.read_axis("LX")
             ly = 0 - controller.read_axis("LY")
-            trilobot.set_left_speed(ly + lx)
-            trilobot.set_right_speed(ly - lx)
-            
+            tbot.set_left_speed(ly + lx)
+            tbot.set_right_speed(ly - lx)
+
     else:
         val = (math.sin(v) / 2.0) + 0.5
-        trilobot.fill_underlighting(val * 127, 0, 0)
-        trilobot.show_underlighting()
+        tbot.fill_underlighting(val * 127, 0, 0)
         v += math.pi / 200
 
-    if trilobot.read_button(trilobot.BUTTON_A):
+    if tbot.read_button(BUTTON_A):
         print("A pressed")
         a = min(a + 0.01, 1.0)
     else:
         a = max(a - 0.01, 0.0)
-    trilobot.set_led(trilobot.LED_A, a)
+    tbot.set_led(LED_A, a)
 
-    if trilobot.read_button(trilobot.BUTTON_B):
+    if tbot.read_button(BUTTON_B):
         b = min(b + 0.01, 1.0)
         print("B pressed")
     else:
         b = max(b - 0.01, 0.0)
-    trilobot.set_led(trilobot.LED_B, b)
+    tbot.set_led(LED_B, b)
 
-    if trilobot.read_button(trilobot.BUTTON_X):
+    if tbot.read_button(BUTTON_X):
         x = min(x + 0.01, 1.0)
         print("X pressed")
     else:
         x = max(x - 0.01, 0.0)
-    trilobot.set_led(trilobot.LED_X, x)
+    tbot.set_led(LED_X, x)
 
-    if trilobot.read_button(trilobot.BUTTON_Y):
+    if tbot.read_button(BUTTON_Y):
         y = min(y + 0.01, 1.0)
         print("Y pressed")
     else:
         y = max(y - 0.01, 0.0)
-    trilobot.set_led(trilobot.LED_Y, y)
+    tbot.set_led(LED_Y, y)
 
     time.sleep(0.01)

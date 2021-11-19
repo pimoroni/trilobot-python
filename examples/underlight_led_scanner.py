@@ -1,32 +1,29 @@
-"""Make an LED scanning animation with the underlighting"""
-import trilobot
+#!/usr/bin/env python
+
 import time
-import atexit
+from trilobot import *
 
-interval = 0.1 # control the speed of the LED animation
-tb = trilobot.Trilobot()
+"""Make an LED scanning animation with the underlighting"""
 
-def off():
-    """A quick shortcut to turn everything off"""
-    tb.fill_underlighting(0, 0, 0)
-    tb.show_underlighting()
+print("Trilobot Test LEDs Demo\n")
 
-atexit.register(off)
+interval = 0.1  # control the speed of the LED animation
+tbot = Trilobot()
+
+RED = (255, 0, 0)
 
 # Map so 0-5 goes from left to right.
-mapping = [tb.REAR_RIGHT, tb.REAR_LEFT, tb.MIDDLE_LEFT, tb.FRONT_LEFT, tb.FRONT_RIGHT, tb.MIDDLE_RIGHT]
+mapping = [LIGHT_REAR_LEFT, LIGHT_MIDDLE_LEFT, LIGHT_FRONT_LEFT, LIGHT_FRONT_RIGHT, LIGHT_MIDDLE_RIGHT, LIGHT_REAR_RIGHT]
 
 while True:
     for n in range(0, 5):
         phy_led = mapping[n]
-        tb.fill_underlighting(0, 0, 0)
-        tb.set_underlighting(phy_led, 255, 0, 0)
-        tb.show_underlighting()
+        tbot.clear_underlighting(show=False)
+        tbot.set_underlight(phy_led, RED)
         time.sleep(interval)
 
     for n in range(5, 0, -1):
         phy_led = mapping[n]
-        tb.fill_underlighting(0, 0, 0)
-        tb.set_underlighting(phy_led, 255, 0, 0)
-        tb.show_underlighting()
+        tbot.clear_underlighting(show=False)
+        tbot.set_underlight(phy_led, RED)
         time.sleep(interval)

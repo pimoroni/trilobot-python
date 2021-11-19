@@ -1,33 +1,30 @@
+#!/usr/bin/env python
+
+import time
+from trilobot import Trilobot
+
 """
 Flash the underlighting LEDs red, green and blue.
 Will turn them off when exited.
 """
-import trilobot
-import time
-import atexit
 
-interval = 0.3 # control the speed of the LED animation
-tb = trilobot.Trilobot()
+print("Trilobot Test LEDs Demo\n")
 
-def off():
-    """A quick shortcut to turn everything off"""
-    tb.fill_underlighting(0, 0, 0)
-    tb.show_underlighting()
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
 
-# When the code exits - error, or completes, make sure the leds are off
-atexit.register(off)
+interval = 0.3  # control the speed of the LED animation
+tbot = Trilobot()
 
 # Cycle R, G, B 10 times.
 for i in range(0, 10):
     print(i)
-    tb.fill_underlighting(255, 0, 0)
-    tb.show_underlighting()
+    tbot.fill_underlighting(RED)
     time.sleep(interval)
 
-    tb.fill_underlighting(0, 255, 0)
-    tb.show_underlighting()
+    tbot.fill_underlighting(GREEN)
     time.sleep(interval)
 
-    tb.fill_underlighting(0, 0, 255)
-    tb.show_underlighting()
+    tbot.fill_underlighting(BLUE)
     time.sleep(interval)
