@@ -1,38 +1,40 @@
+#!/usr/bin/env python
+
 import time
 from trilobot import Trilobot
 
-print("Trilobot movement Demo\n")
+print("Trilobot Movement Demo\n")
 
 tbot = Trilobot()
 
 # Demo each of the move methods
-tbot.forwards()
+tbot.forward()
 time.sleep(1)
 
-tbot.reverse()
+tbot.backward()
 time.sleep(1)
 
-tbot.curve_right()
+tbot.curve_forward_right()
 time.sleep(1)
 
-tbot.curve_left()
+tbot.curve_forward_left()
 time.sleep(1)
 
 tbot.turn_right()
 time.sleep(1)
 
 # Half speed
-tbot.forwards(0.5)
+tbot.forward(0.5)
 time.sleep(1)
 
 tbot.turn_left(0.5)
 time.sleep(1)
 
-tbot.curve_right(-0.75)
+tbot.curve_backward_right(0.75)
 time.sleep(1)
 
 # Full speed
-tbot.forwards()
+tbot.forward()
 time.sleep(0.5)
 
 # Come to a halt gently
@@ -40,8 +42,9 @@ tbot.coast()
 time.sleep(1)
 
 # Full speed
-tbot.forwards()
+tbot.forward()
 time.sleep(0.5)
 
 # Apply the brakes
 tbot.stop()
+time.sleep(1.0)

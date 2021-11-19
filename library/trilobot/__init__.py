@@ -259,13 +259,13 @@ class Trilobot():
         self.set_motor_speeds(speed, 0.0)
 
     def curve_backward_left(self, speed=1.0):
-        self.set_motor_speed(0.0, -speed)
+        self.set_motor_speeds(0.0, -speed)
 
     def curve_backward_right(self, speed=1.0):
-        self.set_motor_speed(-speed, 0.0)
+        self.set_motor_speeds(-speed, 0.0)
 
     def stop(self):
-        self.set_motor_speed(0.0, 0.0)
+        self.set_motor_speeds(0.0, 0.0)
 
     def coast(self):
         self.disable_motors()
