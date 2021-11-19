@@ -70,14 +70,14 @@ while True:
                 led_h -= 1.0
 
             try:
-                if controller.read_button("L1"):
+                if controller.read_button("L1") and tank_steer:
                     tank_steer = False
-                    print(f"Tank Steer: {tank_steer}")
-                if controller.read_button("R1"):
+                    print("Tank Steering Disabled")
+                if controller.read_button("R1") and not tank_steer:
                     tank_steer = True
-                    print(f"Tank Steer: {tank_steer}")
+                    print("Tank Steering Enabled")
             except ValueError:  # Cannot find 'L1' or 'R1'
-                print("Tank Steer Not Availabl")
+                print("Tank Steering Not Available")
 
             try:
                 if controller.read_button("A"):
