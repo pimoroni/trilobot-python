@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from gpiozero import Servo
 import math
 import os
