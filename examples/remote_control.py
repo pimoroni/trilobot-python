@@ -15,12 +15,12 @@ trilobot = Trilobot()
 #
 # controller = controller_mappings.create_8bitdo_lite_controller()
 # controller = controller_mappings.create_8bitdo_sn30_controller()
-# controller = controller_mappings.create_8bitdo_sn30_pro_controller()
+controller = controller_mappings.create_8bitdo_sn30_pro_controller()
 # controller = controller_mappings.create_rock_candy_controller()
 # controller = controller_mappings.create_ps4_wireless_controller()
 # controller = controller_mappings.create_ps4_wireless_controller_touchpad()
 # controller = controller_mappings.create_ps4_wireless_controller_motion()
-controller = controller_mappings.create_xbox360_wireless_controller()
+# controller = controller_mappings.create_xbox360_wireless_controller()
 
 # Attempt to connect to the created controller
 controller.connect()
@@ -46,6 +46,8 @@ h = 0
 v = 0
 spacing = 1.0 / trilobot.NUM_UNDERLIGHTS
 
+tank_steer = False
+
 a = 0
 b = 0
 x = 0
@@ -66,9 +68,19 @@ while True:
             led_h = h + (led * spacing)
             if led_h >= 1.0:
                 led_h -= 1.0
-
+                
             try:
-                if controller.read_button("A"):
+                if controller.read_button("L1"):      
+                    tank_steer = False
+                    print(f"Tank Steer: {tank_steer}")
+                if controller.read_button("R1"):      
+                    tank_steer = True
+                    print(f"Tank Steer: {tank_steer}")
+            except ValueError:  # Cannot find 'L1' or 'R1'
+                print("Tank Steer Not Availabl")
+
+            try:                
+                if controller.read_button("A"):                          
                     trilobot.set_underlighting_hsv(led, 0.0, 0.0, 0.7)
                 else:
                     trilobot.set_underlighting_hsv(led, led_h)
@@ -80,10 +92,17 @@ while True:
         if h >= 1.0:
             h -= 1.0
 
-        lx = controller.read_axis("LX")
-        ly = 0 - controller.read_axis("LY")
-        trilobot.set_left_speed(ly + lx)
-        trilobot.set_right_speed(ly - lx)
+        if tank_steer:
+            ly = controller.read_axis("LY")
+            ry = controller.read_axis("RY")
+            trilobot.set_left_speed(-ly)
+            trilobot.set_right_speed(-ry)
+        else:
+            lx = controller.read_axis("LX")
+            ly = 0 - controller.read_axis("LY")
+            trilobot.set_left_speed(ly + lx)
+            trilobot.set_right_speed(ly - lx)
+            
     else:
         val = (math.sin(v) / 2.0) + 0.5
         trilobot.fill_underlighting(val * 127, 0, 0)
