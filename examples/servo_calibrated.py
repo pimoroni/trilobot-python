@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-import math
 import time
 from trilobot import Trilobot
 
 tbot = Trilobot()
+tbot.initialise_servo(-90, 90, 550, 2450) # Example pulses that map to min and max angles
 
 print("Go to center")
 tbot.servo_to_center()
@@ -25,8 +25,12 @@ time.sleep(2)
 print("Servo Off")
 tbot.disable_servo()
 
-print("Now Scan")
+print("Now Sweep")
 while True:
-    for i in range(0, 360):
-        tbot.set_servo_value(math.sin(math.radians(i)))
+    for i in range(-90, 90):
+        tbot.set_servo_angle(i)
+        time.sleep(0.01)
+
+    for i in range(-90, 90):
+        tbot.set_servo_angle(0 - i)
         time.sleep(0.01)

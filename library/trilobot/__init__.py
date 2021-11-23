@@ -145,6 +145,9 @@ class Trilobot():
         GPIO.setup(self.ULTRA_TRIG_PIN, GPIO.OUT)
         GPIO.setup(self.ULTRA_ECHO_PIN, GPIO.IN)
 
+        # setup the servo object to None, for later initialisation
+        self.servo = None
+
     def __del__(self):
         sn3218.disable()
         GPIO.cleanup()
@@ -348,7 +351,6 @@ class Trilobot():
     #########################
     # Underlighting Helpers #
     #########################
-
     def set_left_underlights(self, r_color, g=None, b=None, show=True):
         self.set_underlight(LIGHT_FRONT_LEFT, r_color, g, b, show=False)
         self.set_underlight(LIGHT_MIDDLE_LEFT, r_color, g, b, show=False)
@@ -489,15 +491,61 @@ class Trilobot():
     #########
     # Servo #
     #########
-    def set_servo():
-        pass
+    def initialise_servo(self, min_angle=-90, max_angle=90, min_pulse_us=500, max_pulse_us=2500):
+        if self.servo is not None:
+            raise RuntimeError("Servo is already initialised.")
 
-    def disable_servo():
-        pass
+        # if not exists /var/run/pigpio.pid:
+        #    stop now
+        import os
+        import sys
+        if not os.path.isfile('/var/run/pigpio.pid'):
+            print('Trilobot uses pigpio for Servo control.')
+            print('If it is not already installed, please install it with "sudo apt install pigpio"')
+            print('Then run "sudo pigpiod" to enable')
+            sys.exit()
 
-    def set_servo_calibration():
-        pass
+        # set up servo control
+        from gpiozero.pins.pigpio import PiGPIOFactory
+        from gpiozero import AngularServo
+        self.servo = AngularServo(self.SERVO_PIN, initial_angle=None,
+            min_angle=min_angle,
+            max_angle=max_angle,
+            min_pulse_width=min_pulse_us / 1000000,
+            max_pulse_width=max_pulse_us / 1000000,
+            pin_factory=PiGPIOFactory())
 
+    def set_servo_value(self, value):
+        if self.servo is None:
+            self.initialise_servo()
+        self.servo.value = value
+
+    def set_servo_angle(self, angle):
+        if self.servo is None:
+            self.initialise_servo()
+        self.servo.angle = angle
+
+    def disable_servo(self):
+        if self.servo is not None:
+            self.servo.value = None
+
+    #########################
+    # Servo Helpers #
+    #########################
+    def servo_to_center(self):
+        if self.servo is None:
+            self.initialise_servo()
+        self.servo.mid()
+
+    def servo_to_min(self):
+        if self.servo is None:
+            self.initialise_servo()
+        self.servo.min()
+
+    def servo_to_max(self):
+        if self.servo is None:
+            self.initialise_servo()
+        self.servo.max()
 
 if __name__ == "__main__":
     tbot = Trilobot()
