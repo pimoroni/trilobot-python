@@ -187,3 +187,46 @@ The default `offset` is set to a value that is suitable for the Raspberry Pi 4, 
 To give more stable readings, this method will attempt to take several readings and return the average distance. You can set the maximum time you want it to take before returning a result so you have control over how long this method ties up your program. It takes as many readings up to the requested number of samples set as it can before the timeout total is reached. It then returns the average distance measured. Any readings where the single reading takes more than the timeout is ignored so these do not distort the average distance measured. 
 
 If no valid readings are taken before the timeout then it returns zero. You can choose parameters to get faster but less accurate readings or take longer to get more samples to average before it returns. The timeout effectively limits the maximum distance the sensor can measure because if the sound pulse takes longer to return over the distance than the timeout set then this method returns zero rather than waiting. So to extend the distance that can be measured, use a larger timeout.
+
+
+## Servo 
+
+Trilobot features a servo connector between the two motors and can be used to power a small 5v servo. 
+
+The following methods are available from code:
+
+* `enable_servo( _min = SERVO_MIN,_max = SERVO_MAX )`: Enabling the servo and optionally specifying the minimum and maximum values for the servo. Must be called before using the servo.
+* `disable_servo()` : Disable the servo, stops the servo from running 
+* `set_servo(pos = SERVO_MID, delay = SERVO_DELAY)`: Set the servo to specific value with a delay before pausing the servo to reduce jitter, set delay=None to go as fast as possible         
+* `set_servo_angle(angle = 90, delay = SERVO_DELAY)`: Set the servo to a angle in degrees, tweeking the values used when enabling the servo can be used to improve accuracy
+* `interpolate(value, angleMin, angleMax, cycleMin, cycleMax)`: This method can be used to translate a value between angleMin and angleMax to cycleMin and cycleMax (used internally to convert degress to servo cycles)
+
+Several constants are also available:
+
+* `SERVO_MIN` = 2.5 : Default minimum value used by the servo ~ 0 degrees
+* `SERVO_MID` = 7.5 : Default middle value used by the servo ~ 90 degrees
+* `SERVO_MAX` = 12.5 : Default max value used by the servo ~ 180 degrees
+* `SERVO_DELAY` = 0.25 : Default delay after setting the servo position before turning off the servo to reduce jitter.
+
+```python
+# Enable the servo with the default settings
+tbot.enable_servo()
+# Move to the minimum then to the maximum servo positions allowing half a second for the servo to reach its position before switching off then pause for 2 seconds
+tbot.set_servo(SERVO_MIN, 0.5)
+time.sleep(2)
+tbot.set_servo(SERVO_MAX, 0.5)
+```
+
+```python
+# Enable the servo with a minimum of 0.5 duty cycle and a maximum of 13.5
+tbot.enable_servo(0.5,13.5)
+# Move to 90 degrees allowing the default delay of a quarter of a second
+tbot.set_servo_angle(90)
+```
+
+```python
+# Enable the servo with the default settings
+tbot.enable_servo()
+# Move to 180 degrees allowing the default delay of half a second
+tbot.set_servo_angle(180,0.5)
+```

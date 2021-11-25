@@ -33,6 +33,11 @@ MOTOR_LEFT = 0
 MOTOR_RIGHT = 1
 NUM_MOTORS = 2
 
+SERVO_MIN = 2.5
+SERVO_MID = 7.5
+SERVO_MAX = 12.5
+SERVO_DELAY = 0.25
+
 
 class Trilobot():
     # User button pins
@@ -73,6 +78,13 @@ class Trilobot():
 
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
+        
+        # Setup servo pin
+        GPIO.setup(self.SERVO_PIN, GPIO.OUT)
+        self.servo_pin = GPIO.PWM(self.SERVO_PIN, 50) # GPIO 12 for PWM with 50Hz        
+        self.servo_min = SERVO_MIN
+        self.servo_max = SERVO_MAX
+        self.servo_enabled = False;
 
         # Setup user buttons
         GPIO.setup(self.BUTTON_A_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -489,15 +501,48 @@ class Trilobot():
     #########
     # Servo #
     #########
-    def set_servo():
-        pass
+    def interpolate(self, value, angleMin, angleMax, cycleMin, cycleMax):
+        # Figure out how 'wide' each range is
+        angleSpan = angleMax - angleMin
+        cycleSpan = cycleMax - cycleMin
+        
+        # Convert the angle range into a 0-1 range (float)        
+        valueScaled = float(value - angleMin) / float(angleSpan)                
+        
+        # Convert the 0-1 range into a value in the cycle range.
+        cycle = cycleMin + (valueScaled * cycleSpan)        
+        return cycle
+     
+    def enable_servo(self, _min = SERVO_MIN, _max = SERVO_MAX):   
+        if _min <= 0.0:
+            raise ValueError("enable_servo: minimum range should greater than 0")
+            
+        if _max > 15.0:
+            raise ValueError("enable_servo: maximum range should be 15 or less")
+            
+        self.servo_pin.start(0) 
+        self.servo_min = _min
+        self.servo_max = _max
+        self.servo_enabled = True;
+        
+    def set_servo(self, pos = SERVO_MID, delay = SERVO_DELAY):         
+        if self.servo_enabled == False:
+            raise RuntimeError("set_servo: Servo must be enabled before use")
+                 
+        self.servo_pin.ChangeDutyCycle(pos)
+        if delay != None:
+            time.sleep(delay)
+            self.servo_pin.ChangeDutyCycle(0)
+        
+        
+    def set_servo_angle(self, angle = 90, delay = SERVO_DELAY):
+        pos = self.interpolate(angle,0,180,self.servo_min,self.servo_max)
+        self.set_servo(pos,delay)        
 
-    def disable_servo():
-        pass
-
-    def set_servo_calibration():
-        pass
-
+    def disable_servo(self):
+        self.servo_pin.stop()
+        self.servo_enabled = False
+          
 
 if __name__ == "__main__":
     tbot = Trilobot()
