@@ -547,6 +547,13 @@ class Trilobot():
             self.initialise_servo()
         self.servo.max()
 
+    def servo_to_percent(self, value, value_min=0, value_max=1, angle_min=-90, angle_max=+90):
+        if self.servo is None:
+            self.initialise_servo()
+        # Map the value from its range to an angle range
+        angle = (value - value_min) * (angle_max - angle_min) / (value_max - value_min) + angle_min
+        self.set_servo_angle(angle)
+
 if __name__ == "__main__":
     tbot = Trilobot()
 
