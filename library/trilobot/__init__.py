@@ -502,18 +502,19 @@ class Trilobot():
         if not os.path.isfile('/var/run/pigpio.pid'):
             print('Trilobot uses pigpio for Servo control.')
             print('If it is not already installed, please install it with "sudo apt install pigpio"')
-            print('Then run "sudo pigpiod" to enable')
+            print('Then run "sudo pigpiod" to enable it until the next boot, \
+and "sudo systemctl enable pigpiod" to have it auto-start on every boot')
             sys.exit()
 
         # set up servo control
         from gpiozero.pins.pigpio import PiGPIOFactory
         from gpiozero import AngularServo
         self.servo = AngularServo(self.SERVO_PIN, initial_angle=None,
-            min_angle=min_angle,
-            max_angle=max_angle,
-            min_pulse_width=min_pulse_us / 1000000,
-            max_pulse_width=max_pulse_us / 1000000,
-            pin_factory=PiGPIOFactory())
+                                  min_angle=min_angle,
+                                  max_angle=max_angle,
+                                  min_pulse_width=min_pulse_us / 1000000,
+                                  max_pulse_width=max_pulse_us / 1000000,
+                                  pin_factory=PiGPIOFactory())
 
     def set_servo_value(self, value):
         if self.servo is None:
@@ -553,6 +554,7 @@ class Trilobot():
         # Map the value from its range to an angle range
         angle = (value - value_min) * (angle_max - angle_min) / (value_max - value_min) + angle_min
         self.set_servo_angle(angle)
+
 
 if __name__ == "__main__":
     tbot = Trilobot()

@@ -4,7 +4,7 @@ import time
 from trilobot import Trilobot
 
 tbot = Trilobot()
-tbot.initialise_servo(-90, 90, 550, 2450) # Example pulses that map to min and max angles
+tbot.initialise_servo(-90, 90, 550, 2450)  # Example pulses that map to min and max angles
 
 print("Go to center")
 tbot.servo_to_center()
