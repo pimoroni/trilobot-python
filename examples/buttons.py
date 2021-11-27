@@ -1,4 +1,4 @@
-import time
+
 from trilobot import Trilobot
 
 tbot = Trilobot()
