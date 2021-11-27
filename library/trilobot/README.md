@@ -187,3 +187,19 @@ The default `offset` is set to a value that is suitable for the Raspberry Pi 4, 
 To give more stable readings, this method will attempt to take several readings and return the average distance. You can set the maximum time you want it to take before returning a result so you have control over how long this method ties up your program. It takes as many readings up to the requested number of samples set as it can before the timeout total is reached. It then returns the average distance measured. Any readings where the single reading takes more than the timeout is ignored so these do not distort the average distance measured. 
 
 If no valid readings are taken before the timeout then it returns zero. You can choose parameters to get faster but less accurate readings or take longer to get more samples to average before it returns. The timeout effectively limits the maximum distance the sensor can measure because if the sound pulse takes longer to return over the distance than the timeout set then this method returns zero rather than waiting. So to extend the distance that can be measured, use a larger timeout.
+
+## Servo 
+
+Trilobot features a servo connector between the two motors that can be used to power a small 5V servo.
+
+The following methods are available from code:
+
+* `set_servo_value(value)`: Sets the servo position to a value between `-1.0` and `+1.0`
+* `set_servo_angle(angle)`: Sets the servo to an angle in degrees
+* `disable_servo()`: Disables the servo, stopping it from running or holding its position
+* `servo_to_center()`: Moves the servo to its center
+* `servo_to_min()`: Moves the servo to its minimum position
+* `servo_to_max()`: Moves the servo to its maximum position
+* `servo_to_percent(value, value_min=0, value_max=1, angle_min=-90, angle_max=+90)`: Moves the servo to a position that is a percentage between the minimum and maximum angles specified.
+
+* `initialise_servo(min_angle=-90, max_angle=90, min_pulse_us=500, max_pulse_us=2500)`: Initialises servo control. This gets called automatically when using any of the above functions (other than `disable_servo()`) with default parameters. Calling this from code before that lets you adjust the exact pulse timings that correspond with the minimum and maximum angles your servo is able to reach.

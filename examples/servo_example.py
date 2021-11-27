@@ -1,39 +1,41 @@
 #!/usr/bin/env python
 
-from gpiozero import Servo
 import math
-import os
-import sys
-from time import sleep
+import time
+from trilobot import Trilobot
 
-# if not exists /var/run/pigpio.pid:
-#    stop now
-if not os.path.isfile('/var/run/pigpio.pid'):
-    print('Please install pigpio with "sudo apt install pigpio"')
-    print('Then run "sudo pigpiod" to enable')
-    sys.exit()
+tbot = Trilobot()
 
-from gpiozero.pins.pigpio import PiGPIOFactory
-factory = PiGPIOFactory()
-servo = Servo(12, min_pulse_width=0.5 / 1000, max_pulse_width=2.5 / 1000, pin_factory=factory)
+print("Go to center")
+tbot.servo_to_center()
+time.sleep(2)
 
-print("Go to middle")
-servo.mid()
-sleep(2)
 print("Go to min")
-servo.min()
-sleep(2)
-print("Go to max")
-servo.max()
-sleep(2)
-print("And back to middle")
-servo.mid()
-sleep(2)
-print("Servo Off")
-servo.value = None
+tbot.servo_to_min()
+time.sleep(2)
 
-print("Now Scan")
-while True:
+print("Go to max")
+tbot.servo_to_max()
+time.sleep(2)
+
+print("And back to center")
+tbot.servo_to_center()
+time.sleep(2)
+
+print("Servo Off")
+tbot.disable_servo()
+
+print("Now Scan 5 Times")
+for j in range(0, 5):
     for i in range(0, 360):
-        servo.value = math.sin(math.radians(i))
-        sleep(0.01)
+        tbot.set_servo_value(math.sin(math.radians(i)))
+        time.sleep(0.01)
+
+print("Now Scan 5 Times, in descrete steps")
+for j in range(0, 5):
+    for i in range(0, 10):
+        tbot.servo_to_percent(i, 0, 10, 0)
+        time.sleep(0.5)
+    for i in range(0, 10):
+        tbot.servo_to_percent(i, 10, 0, 0)
+        time.sleep(0.5)
