@@ -13,6 +13,7 @@ print("Trilobot Test LEDs Demo\n")
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+BLACK  = (0, 0, 0)
 
 interval = 0.3  # control the speed of the LED animation
 tbot = Trilobot()
@@ -28,3 +29,20 @@ for i in range(0, 10):
 
     tbot.fill_underlighting(BLUE)
     time.sleep(interval)
+
+# turn off underlighting
+
+tbot.fill_underlighting(BLACK)
+
+# flash the button LEDs at 50% 10 times
+
+for i in range(0,10):
+    print(i)
+    for led in range(0,4):
+        tbot.set_led(led, 0.5)
+    time.sleep(interval)
+    for led in range(0, 4):
+        tbot.set_led(led, 0)
+    time.sleep(interval)
+
+
