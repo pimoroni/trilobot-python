@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import time
 from trilobot import Trilobot, BUTTON_A
 
