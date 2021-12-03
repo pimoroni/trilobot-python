@@ -1,22 +1,21 @@
+#!/usr/bin/env python3
 
-from trilobot import Trilobot
+from trilobot import Trilobot, BUTTON_A
 
 tbot = Trilobot()
-BUTTON_A = 0
 
 print("Demo of Trilobot's buttons")
 
 
-lastButtonStatus = False
+last_button_status = False
 while True:
-
-    buttonStatus = tbot.read_button(BUTTON_A)
-    if buttonStatus != lastButtonStatus:
-        if buttonStatus:
+    button_status = tbot.read_button(BUTTON_A)
+    if button_status != last_button_status:
+        if button_status:
             print("Button A is pressed")
-            lastButtonStatus = True
+            last_button_status = True
             tbot.set_led(BUTTON_A, 0.5)
         else:
             print("Button A has been released")
-            lastButtonStatus = False
+            last_button_status = False
             tbot.set_led(BUTTON_A, 0.0)

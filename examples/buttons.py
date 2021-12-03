@@ -1,25 +1,24 @@
+#!/usr/bin/env python3
 
-from trilobot import Trilobot
+from trilobot import Trilobot, NUM_BUTTONS
 
 tbot = Trilobot()
-BUTTON_A = 0
 
 print("Demo of Trilobot's buttons")
 
-buttonStatus = [False, False, False, False]
-lastButtonStatus = [False, False, False, False]
-buttonNames = ["A", "B", "X", "Y"]
+button_status = [False, False, False, False]
+last_button_status = [False, False, False, False]
+button_names = ["A", "B", "X", "Y"]
 
 while True:
-
-    for i in range(0,4):
-        buttonStatus[i] = tbot.read_button(i)
-        if buttonStatus[i] != lastButtonStatus[i]:
-            if buttonStatus[i]:
-                print(f"Button {buttonNames[i]} is pressed")
-                lastButtonStatus[i] = True
+    for i in range(NUM_BUTTONS):
+        button_status[i] = tbot.read_button(i)
+        if button_status[i] != last_button_status[i]:
+            if button_status[i]:
+                print(f"Button {button_names[i]} is pressed")
+                last_button_status[i] = True
                 tbot.set_led(i, 0.5)
             else:
-                print(f"Button {buttonNames[i]} has been released")
-                lastButtonStatus[i] = False
+                print(f"Button {button_names[i]} has been released")
+                last_button_status[i] = False
                 tbot.set_led(i, 0.0)
