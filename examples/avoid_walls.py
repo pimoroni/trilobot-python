@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from trilobot import Trilobot, BUTTON_A
 
