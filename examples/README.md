@@ -47,8 +47,7 @@ A demonstration of Trilobot's ultrasound sensor that has it keep an object a goa
 ### Avoid Walls
 [avoid_walls.py](avoid_walls.py)
 
-<-- TODO -->
-
+Further demonstrating Trilobot's ultrasound distance sensor, this demonstration will drive and then turn right to avoid obstacles it detects with the sensor. 
 
 ## Servo Examples
 
