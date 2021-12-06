@@ -24,7 +24,9 @@ tbot = Trilobot()
 # controller = controller_mappings.create_ps4_wireless_controller()
 # controller = controller_mappings.create_ps4_wireless_controller_touchpad()
 # controller = controller_mappings.create_ps4_wireless_controller_motion()
-controller = controller_mappings.create_xbox360_wireless_controller()
+# controller = controller_mappings.create_xbox360_wireless_controller()
+
+controller = controller_mappings.choose_controller()
 
 # Attempt to connect to the created controller
 controller.connect()
@@ -113,27 +115,27 @@ while True:
         a = min(a + 0.01, 1.0)
     else:
         a = max(a - 0.01, 0.0)
-    tbot.set_led(LED_A, a)
+    tbot.set_button_led(BUTTON_A, a)
 
     if tbot.read_button(BUTTON_B):
         b = min(b + 0.01, 1.0)
         print("B pressed")
     else:
         b = max(b - 0.01, 0.0)
-    tbot.set_led(LED_B, b)
+    tbot.set_button_led(BUTTON_B, b)
 
     if tbot.read_button(BUTTON_X):
         x = min(x + 0.01, 1.0)
         print("X pressed")
     else:
         x = max(x - 0.01, 0.0)
-    tbot.set_led(LED_X, x)
+    tbot.set_button_led(BUTTON_X, x)
 
     if tbot.read_button(BUTTON_Y):
         y = min(y + 0.01, 1.0)
         print("Y pressed")
     else:
         y = max(y - 0.01, 0.0)
-    tbot.set_led(LED_Y, y)
+    tbot.set_button_led(BUTTON_Y, y)
 
     time.sleep(0.01)

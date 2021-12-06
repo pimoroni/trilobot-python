@@ -3,7 +3,11 @@
 import time
 from trilobot import Trilobot, BUTTON_A
 
-print("Trilobot Follow Straight Demo\n")
+"""
+A demonstration of Trilobot's ultrasound sensor that has it keep an object a goal distance in front of it. If the object gets closer Trilobot will reverse, if the object gets further away Trilobot will drive forward.
+"""
+
+print("Trilobot Follow Straight Example\n")
 
 tbot = Trilobot()
 
