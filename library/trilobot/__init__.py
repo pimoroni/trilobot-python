@@ -130,19 +130,12 @@ class Trilobot():
                                   self.MOTOR_RIGHT_P: motor_right_p_pwm,
                                   self.MOTOR_RIGHT_N: motor_right_n_pwm}
 
-        GPIO.setup(self.UNDERLIGHTING_EN_PIN, GPIO.OUT)
-        GPIO.output(self.UNDERLIGHTING_EN_PIN, False)
-
         sn3218.reset()
 
-        sn3218.output([0 for i in range(18)])
-        sn3218.enable_leds(0b111111111111111111)
-        sn3218.enable()
-
         self.underlight = [0 for i in range(18)]
-
-        GPIO.output(self.UNDERLIGHTING_EN_PIN, False)
-        sn3218.output([128 for i in range(18)])
+        sn3218.output(self.underlight)
+        sn3218.enable_leds(0b111111111111111111)
+        sn3218.disable()
 
         # setup ultrasonic sensor pins
         GPIO.setup(self.ULTRA_TRIG_PIN, GPIO.OUT)
@@ -280,7 +273,10 @@ class Trilobot():
     #################
     def show_underlighting(self):
         sn3218.output(self.underlight)
-        GPIO.output(self.UNDERLIGHTING_EN_PIN, True)
+        sn3218.enable()
+
+    def disable_underlighting(self):
+        sn3218.disable()
 
     def set_underlight(self, light, r_color, g=None, b=None, show=True):
         if type(light) is not int:
@@ -523,12 +519,13 @@ if __name__ == "__main__":
     print("Trilobot Function Test")
 
     time.sleep(2.0)
+    tbot.fill_underlighting(127, 127, 127, show=False)
     for i in range(0, 10):
         print(i)
-        GPIO.output(tbot.UNDERLIGHTING_EN_PIN, True)
+        tbot.show_underlighting()
         time.sleep(0.1)
-        GPIO.output(tbot.UNDERLIGHTING_EN_PIN, False)
-        time.sleep(0.1)
+        tbot.disable_underlighting()
+        time.sleep(0.5)
 
     for led in range(NUM_UNDERLIGHTS):
         tbot.clear_underlighting(show=False)

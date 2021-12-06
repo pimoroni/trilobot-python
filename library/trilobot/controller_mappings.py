@@ -228,11 +228,16 @@ def choose_controller():
 
     print("Currently supported controllers:")
     for i in range(0, len(controller_list)):
-        print(i, ") ", controller_list[i][0], sep="")
+        print("  ", i, ") ", controller_list[i][0], sep="")
 
-    controller_id = int(input("Select controller:"))
-    if controller_id < 0 or controller_id >= len(controller_list):
-        print("Not a valid controller. Exiting")
+    try:
+        controller_id = int(input("Select controller: "))
+        if controller_id < 0 or controller_id >= len(controller_list):
+            print("Not a valid controller. Exiting")
+            quit()
+
+        print("Selected:", controller_list[controller_id][0], end="\n\n")
+        return controller_list[controller_id][1]()
+    except ValueError:
+        print("Not a number. Exiting")
         quit()
-
-    return controller_list[i][1]()

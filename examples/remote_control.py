@@ -17,19 +17,7 @@ BLUE = (0, 0, 255)
 
 tbot = Trilobot()
 
-#
-# Uncomment one of the lines below to use one of the existing controller
-# mappings. Or create your own using the SimpleController class
-#
-# controller = controller_mappings.create_8bitdo_lite_controller()
-# controller = controller_mappings.create_8bitdo_sn30_controller()
-# controller = controller_mappings.create_8bitdo_sn30_pro_controller()
-# controller = controller_mappings.create_rock_candy_controller()
-# controller = controller_mappings.create_ps4_wireless_controller()
-# controller = controller_mappings.create_ps4_wireless_controller_touchpad()
-# controller = controller_mappings.create_ps4_wireless_controller_motion()
-# controller = controller_mappings.create_xbox360_wireless_controller()
-
+# Presents the user with an option of what controller to use
 controller = controller_mappings.choose_controller()
 
 # Attempt to connect to the created controller
