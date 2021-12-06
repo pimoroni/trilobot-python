@@ -28,8 +28,9 @@ Shows how to control the brightness of the button LEDs, by having them fade up a
 
 [print_distance.py](print_distance.py)
 
-<-- TODO -->
+This is simple demonstration to read distance values from Trilobot's ultrasound distance sensor. It will print the values it reads onto the console in cm, along with the time taken too get the readings.
 
+Stop the example by pressing button A.
 
 ## Motor Examples
 
