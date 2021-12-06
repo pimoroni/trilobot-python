@@ -4,6 +4,15 @@ import math
 import time
 from trilobot import Trilobot
 
+"""
+TODO
+"""
+print("Trilobot Example: Servo Control\n")
+
+SWEEPS = 5  # How many sweeps of the servo to perform
+STEPS = 10  # The number of discrete sweep steps
+STEPS_INTERVAL = 0.5  # The time in seconds between each step of the sequence
+
 tbot = Trilobot()
 
 print("Go to center")
@@ -25,17 +34,23 @@ time.sleep(2)
 print("Servo Off")
 tbot.disable_servo()
 
-print("Now Scan 5 Times")
-for j in range(0, 5):
-    for i in range(0, 360):
+print("Now Sweep", SWEEPS, "Times")
+for j in range(SWEEPS):
+    print("Sine Sweep:", j)
+
+    for i in range(360):
         tbot.set_servo_value(math.sin(math.radians(i)))
         time.sleep(0.01)
 
-print("Now Scan 5 Times, in descrete steps")
-for j in range(0, 5):
-    for i in range(0, 10):
-        tbot.servo_to_percent(i, 0, 10, 0)
-        time.sleep(0.5)
-    for i in range(0, 10):
-        tbot.servo_to_percent(i, 10, 0, 0)
-        time.sleep(0.5)
+print("Now Sweep", SWEEPS, "Times, in descrete steps")
+for j in range(SWEEPS):
+    print("Discrete Sweep:", j)
+
+    for i in range(0, STEPS):
+        tbot.servo_to_percent(i, 0, STEPS, 0)
+        time.sleep(STEPS_INTERVAL)
+    for i in range(0, STEPS):
+        tbot.servo_to_percent(i, STEPS, 0, 0)
+        time.sleep(STEPS_INTERVAL)
+
+print("Done")

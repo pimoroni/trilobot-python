@@ -171,15 +171,15 @@ class Trilobot():
     ########
     # LEDs #
     ########
-    def set_button_led(self, led, value):
-        if type(led) is not int:
+    def set_button_led(self, button_led, value):
+        if type(button_led) is not int:
             raise TypeError("led must be an integer")
 
-        if led not in range(NUM_LEDS):
-            raise ValueError("""led must be an integer in the range 0 to 3. For convenience, use the constants:
-                LED_A (0), LED_B (1), LED_X (2), or LED_Y (3)""")
+        if button_led not in range(NUM_BUTTONS):
+            raise ValueError("""button_led must be an integer in the range 0 to 3. For convenience, use the constants:
+                BUTTON_A (0), BUTTON_B (1), BUTTON_X (2), or BUTTON_Y (3)""")
 
-        pwm = self.led_pwm_mapping[self.leds[led]]
+        pwm = self.led_pwm_mapping[self.leds[button_led]]
         if isinstance(value, bool):
             if value:
                 pwm.ChangeDutyCycle(100)
@@ -354,50 +354,27 @@ class Trilobot():
     # Underlighting Helpers #
     #########################
     def set_underlights(self, lights, r_color, g=None, b=None, show=True):
-		if type(lights) != list and type(lights) != tuple:
-			raise TypeError("lights must be a list or tuple containing the numbers for the underlights to set (from 0 to 5)")
-			
-		if len(lights) >= NUM_UNDERLIGHTS:
-			raise ValueError("lights contains more values than the number of underlights available")
-		if len(lights) == 0:
-			raise ValueError("lights cannot be empty")
-			
-		if len(lights) > 1:
-			for i in range(0, len(lights) - 1):
-				self.set_underlight(lights[i], r_color, g, b, show=False)
+        if type(lights) != list and type(lights) != tuple:
+            raise TypeError("lights must be a list or tuple containing the numbers for the underlights to set (from 0 to 5)")
 
-		self.set_underlight(lights[0], r_color, g, b, show=show)
+        light_count = len(lights)
+        if light_count > NUM_UNDERLIGHTS:
+            raise ValueError("lights contains more values than the number of underlights available")
+        if light_count == 0:
+            raise ValueError("lights cannot be empty")
 
-	def set_underlights_hsv(self, lights, h, s=1, v=1, show=True):
-	    color = [i * 255 for i in hsv_to_rgb(h, s, v)]
-		if type(lights) != list and type(lights) != tuple:
-			raise TypeError("lights must be a list or tuple containing the numbers for the underlights to set (from 0 to 5)")
-			
-		if len(lights) >= NUM_UNDERLIGHTS:
-			raise ValueError("lights contains more values than the number of underlights available")
-		if len(lights) == 0:
-			raise ValueError("lights cannot be empty")
-			
-		if len(lights) > 1:
-			for i in range(0, len(lights) - 1):
-				self.set_underlight(lights[i], color, show=False)
+        if light_count > 1:
+            for i in range(0, light_count - 1):
+                self.set_underlight(lights[i], r_color, g, b, show=False)
 
-		self.set_underlight(lights[0], color, show=show)
+        self.set_underlight(lights[light_count - 1], r_color, g, b, show=show)
 
-	def clear_underlights(self, lights, show=True):
-		if type(lights) != list and type(lights) != tuple:
-			raise TypeError("lights must be a list or tuple containing the numbers for the underlights to set (from 0 to 5)")
-			
-		if len(lights) >= NUM_UNDERLIGHTS:
-			raise ValueError("lights contains more values than the number of underlights available")
-		if len(lights) == 0:
-			raise ValueError("lights cannot be empty")
-			
-		if len(lights) > 1:
-			for i in range(0, len(lights) - 1):
-				self.clear_underlight(lights[i], show=False)
+    def set_underlights_hsv(self, lights, h, s=1, v=1, show=True):
+        color = [i * 255 for i in hsv_to_rgb(h, s, v)]
+        self.set_underlights(lights, color, show=show)
 
-		self.clear_underlight(lights[0], show=show)
+    def clear_underlights(self, lights, show=True):
+        self.set_underlights(lights, 0, 0, 0, show=show)
 
     ##############
     # Ultrasound #

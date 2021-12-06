@@ -217,22 +217,22 @@ def create_ps4_wireless_controller_motion():
 
 
 def choose_controller():
-	controller_list = [("8BitDo Lite", controller_mappings.create_8bitdo_lite_controller),
-					   ("8Bitdo SN30", controller_mappings.create_8bitdo_sn30_controller)]
-					   ("8BitDo SN30 Pro+", controller_mappings.create_8bitdo_sn30_pro_controller)]
-					   ("RockCandy Controller", controller_mappings.create_rock_candy_controller)]
-					   ("XBox360 Wireless Receiver", controller_mappings.create_xbox360_wireless_controller)]
-					   ("PS4 Controller", controller_mappings.create_ps4_wireless_controller)]
-					   ("PS4 Controller - Touchpad", controller_mappings.create_ps4_wireless_controller_touchpad)]
-					   ("PS4 Controller - Motion Sensors", controller_mappings.create_ps4_wireless_controller_motion)]
-	
-	print("Currently supported controllers:")
-	for i in range(0, len(controller_list)):
-		print(i,") ", controller_list[i][0],sep="")
-	
-	controller_id = int(input("Select controller:"))
-	if controller_id < 0 or controller_id >= len(controller_list):
-		print("Not a valid controller. Exiting")
-		exit()
-	
-	return controller_list[i][1]()
+    controller_list = [("8BitDo Lite", create_8bitdo_lite_controller),
+                       ("8Bitdo SN30", create_8bitdo_sn30_controller),
+                       ("8BitDo SN30 Pro+", create_8bitdo_sn30_pro_controller),
+                       ("RockCandy Controller", create_rock_candy_controller),
+                       ("XBox360 Wireless Receiver", create_xbox360_wireless_controller),
+                       ("PS4 Controller", create_ps4_wireless_controller),
+                       ("PS4 Controller - Touchpad", create_ps4_wireless_controller_touchpad),
+                       ("PS4 Controller - Motion Sensors", create_ps4_wireless_controller_motion)]
+
+    print("Currently supported controllers:")
+    for i in range(0, len(controller_list)):
+        print(i, ") ", controller_list[i][0], sep="")
+
+    controller_id = int(input("Select controller:"))
+    if controller_id < 0 or controller_id >= len(controller_list):
+        print("Not a valid controller. Exiting")
+        quit()
+
+    return controller_list[i][1]()

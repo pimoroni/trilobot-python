@@ -5,7 +5,11 @@ import math
 from trilobot import *
 from trilobot import controller_mappings
 
-print("Trilobot Remote Control Demo\n")
+"""
+TODO
+"""
+print("Trilobot Example: Remote Control\n")
+
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)

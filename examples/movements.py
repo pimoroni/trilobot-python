@@ -6,8 +6,8 @@ from trilobot import Trilobot
 """
 A demonstration of all the movement functions of Trilobot.
 """
+print("Trilobot Example: Movement\n")
 
-print("Trilobot Movement Demo\n")
 
 tbot = Trilobot()
 

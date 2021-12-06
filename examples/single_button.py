@@ -2,26 +2,30 @@
 
 from trilobot import Trilobot, BUTTON_A
 
-print("Trilobot Single Button Example")
+"""
+TODO
+"""
+print("Trilobot Example: Single Button\n")
+
 
 tbot = Trilobot()
 
 last_state = False
 while True:
-	# Read the button
+    # Read the button
     button_state = tbot.read_button(BUTTON_A)
-	
-	# Is the button state is different from when we last checked?
+
+    # Is the button state is different from when we last checked?
     if button_state != last_state:
-	
-		# Say if the button was pressed or released
+
+        # Say if the button was pressed or released
         if button_state:
             print("Button A has been pressed")
         else:
             print("Button A has been released")
-			
-		# Turn the button's neighboring LED on or off
-		tbot.set_button_led(BUTTON_A, button_state)
-			
-		# Update our record of the button state
-		last_state = button_state
+
+        # Turn the button's neighboring LED on or off
+        tbot.set_button_led(BUTTON_A, button_state)
+
+        # Update our record of the button state
+        last_state = button_state

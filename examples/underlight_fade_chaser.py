@@ -3,10 +3,11 @@
 import time
 from trilobot import *
 
-print("Trilobot Underlight Fader Chaser Example\n")
+"""
+TODO
+"""
+print("Trilobot Example: Underlight Fade Chaser\n")
 
-
-tbot = Trilobot()
 
 # How many times the LEDs will be updated per second
 UPDATES = 60
@@ -15,12 +16,14 @@ HUE = 0.0  # Red
 WIDTH = 1.5
 SPEED = 3 / UPDATES
 
-mapping = [LIGHT_REAR_LEFT,
+MAPPING = [LIGHT_REAR_LEFT,
            LIGHT_MIDDLE_LEFT,
            LIGHT_FRONT_LEFT,
            LIGHT_FRONT_RIGHT,
            LIGHT_MIDDLE_RIGHT,
            LIGHT_REAR_RIGHT]
+
+tbot = Trilobot()
 
 
 # Maps a value from one range to another
@@ -42,22 +45,22 @@ def chaser_band(position, width, hue):
             if i2 <= band_pixels_end:
                 if i2 <= band_pixels_start:
                     # Outside of the band
-                    tbot.set_underlight_hsv(mapping[i], hue, 0.0, 0.0, show=False)
+                    tbot.set_underlight_hsv(MAPPING[i], hue, 0.0, 0.0, show=False)
                 elif i <= band_pixels_start:
                     # Transition into the band
                     val = map(band_pixels_start, float(i), float(i2), 1.0, 0.0)
-                    tbot.set_underlight_hsv(mapping[i], hue, 1.0, val, show=False)
+                    tbot.set_underlight_hsv(MAPPING[i], hue, 1.0, val, show=False)
                 else:
                     # Inside the band
-                    tbot.set_underlight_hsv(mapping[i], hue, 1.0, 1.0, show=False)
+                    tbot.set_underlight_hsv(MAPPING[i], hue, 1.0, 1.0, show=False)
 
             elif i <= band_pixels_end:
                 # Transition out of the band
                 val = map(band_pixels_end, float(i), float(i2), 0.0, 1.0)
-                tbot.set_underlight_hsv(mapping[i], hue, 1.0, val, show=False)
+                tbot.set_underlight_hsv(MAPPING[i], hue, 1.0, val, show=False)
             else:
                 # Outside of the band
-                tbot.set_underlight_hsv(mapping[i], hue, 0.0, 0.0, show=False)
+                tbot.set_underlight_hsv(MAPPING[i], hue, 0.0, 0.0, show=False)
         tbot.show_underlighting()
 
 
