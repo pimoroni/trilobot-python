@@ -15,7 +15,7 @@ This will create a `Trilobot` class called `tbot` that will be used in the rest 
 ## Buttons
 
 Trilobot has four buttons to its rear, labelled A, B, X, and Y.
-These can be read using the `read_button()` function, which accepts a number between 0 and 3. For convenience, each button can be referred to using these constants.
+These can be read using the `read_button()` function, which accepts a number between `0` and `3`. For convenience, each button can be referred to using these constants.
 
 * `BUTTON_A` = 0
 * `BUTTON_B` = 1
@@ -33,26 +33,22 @@ You can also get the number of buttons using the `NUM_BUTTONS` constant.
 
 ## LEDs
 
-Next to each button on Trilobot is a mono LED. These can be controlled using the `set_led()` function, which accepts a number from 0 to 3 (like the buttons), followed by either `True` for On, `False` for Off, or a number between `0.0` and `1.0` for any brightness in between.
+Next to each button on Trilobot is a mono LED. These can be controlled using the `set_button_led()` function, which accepts a number from `0` to `3` like the buttons, followed by either `True` for On, `False` for Off, or a number between `0.0` and `1.0` for any brightness in between.
 
-For convenience, each LED can be referred to using these constants.
-* `LED_A` = 0
-* `LED_B` = 1
-* `LED_X` = 2
-* `LED_Y` = 3
+For convenience, each LED can be referred to using the same constants as the buttons.
 
 For example, to set the LED next to button B to half brightness you would write:
 
 ```python
-tbot.set_led(LED_B, 0.5)
+tbot.set_button_led(BUTTON_B, 0.5)
 ```
 
-You can also get the number of LEDs using the `NUM_LEDS` constant.
+You can get the number of LEDs using the same constant as the buttons.
 
 
 ## Motors
 
-Tribot features two motors with indepentent control, enabling [differential steering](https://en.wikipedia.org/wiki/Differential_steering), whereby the speed of one motor can be controlled independently of the other.
+Trilobot features two motors with indepentent control, enabling [differential steering](https://en.wikipedia.org/wiki/Differential_steering), whereby the speed of one motor can be controlled independently of the other.
 
 There are several ways these motors can be commanded from code:
 
@@ -86,7 +82,7 @@ If the speeds of both motors are regularly set together, then this can be shorte
 tbot.set_motor_speeds(1.0, 0.5)
 ```
 
-A final way the motors can be controlled is by using `set_motor_speed()`, which accepts a number from 0 to 1, followed by a number between `-1.0` and `1.0`.
+A final way the motors can be controlled is by using `set_motor_speed()`, which accepts a number from `0` to `1`, followed by a number between `-1.0` and `1.0`.
 
 For convenience, each motor can be referred to using these constants.
 * `MOTOR_LEFT` = 0
@@ -111,7 +107,7 @@ There are several ways these lights can be commanded from code:
 
 ### Single Light
 
-A single underlight can be controlled using either `set_underlight()`, which all accept a number from 0 to 5, followed by the colour either as separate red, green, and blue values between `0` and `255`, a list/tuple of three numbers, or a hex colour code. Similarly `set_underlight_hsv()` lets you provide a colour as hue, saturation, and value numbers between `0.0` and `1.0`, and `clear_underlight()` sets the colour to zero.
+A single underlight can be controlled using either `set_underlight()`, which all accept a number from `0` to `5`, followed by the colour either as separate red, green, and blue values between `0` and `255`, a list/tuple of three numbers, or a hex colour code. Similarly `set_underlight_hsv()` lets you provide a colour as hue, saturation, and value numbers between `0.0` and `1.0`, and `clear_underlight()` sets the colour to zero.
 
 For convenience, each light can be referred to using these constants.
 * `LIGHT_FRONT_RIGHT` = 0
@@ -130,46 +126,61 @@ tbot.set_underlight_hsv(LIGHT_REAR_LEFT, 0.0, 1.0, 1.0)  # Red
 tbot.clear_underlight(LIGHT_REAR_RIGHT)  # Off
 ```
 
-### Group Commands
+### All Lights
 
-To make some animations easier to create, there are several conveniece functions that will set several underlights to the same colour at the same time.
+To set all of the underlights to a colour at once, `fill_underlighting()` and `fill_underlighting_hsv()` can be used. These accept a colour either as RGB or HSV in the same format as the single light functions. Similarly, `clear_underlighting()` sets all the LEDs to zero.
 
-#### All
-* `fill_underlighting()`
-* `fill_underlighting_hsv()`
-* `clear_underlighting()`
+### Grouped Lights
 
-#### Sides
-* `set_left_underlights()`
-* `set_right_underlights()`
-* `set_left_underlights_hsv()`
-* `set_right_underlights_hsv()`
-* `clear_left_underlights()`
-* `clear_right_underlights()`
+To make some animations easier to create, several underlights at once using the `set_underlights()`, `set_underlights_hsv()`, and `clear_underlights()` functions. Rather than a single number for the light, they instead take a list or tuple of the light numbers.
 
-#### Sections
-* `set_front_underlights()`
-* `set_middle_underlights()`
-* `set_rear_underlights()`
-* `set_front_underlights_hsv()`
-* `set_middle_underlights_hsv()`
-* `set_rear_underlights_hsv()`
-* `clear_front_underlights()`
-* `clear_middle_underlights()`
-* `clear_rear_underlights()`
+As an example, here are several lights being set in various ways:
 
-### Advanced Control
+```python
+lights = (LIGHT_FRONT_LEFT, LIGHT_MIDDLE_LEFT)
+tbot.set_underlights(lights, 0, 255, 0)  # Green
+tbot.set_underlights(lights, '#0000ff')  # Blue
+tbot.set_underlights_hsv(lights, 0.0, 1.0, 1.0)  # Red
+tbot.clear_underlights(lights)  # Off
+```
+
+For convenience, several groups have been pre-defined.
+* `LIGHTS_LEFT` 
+* `LIGHTS_RIGHT`
+* `LIGHTS_FRONT`
+* `LIGHTS_MIDDLE`
+* `LIGHTS_REAR`
+* `LIGHTS_LEFT_DIAGONAL`
+* `LIGHTS_RIGHT_DIAGONAL`
+
+### Show Underlighting
 
 By default all underlight functions will apply the colour to the underlight(s) it is for immediately. This is because they all have an optional `show` parameter that is `True` by default.
 
-For some effects this behaviour may not be wanted, so including `show=False` then calling the function will delay the applying of the colour to the LEDs until the next function that has `show=True`, or `show_underlighting()` can be called explicitly.
+For some effects this behaviour may not be wanted, so including `show=False` when calling the function will delay the applying of the colour to the LEDs until the next function that has `show=True`, or `show_underlighting()` can be called explicitly.
 
 In the example below, each light is set to red in a loop, then they are all shown with the end call to `show_underlighting()`:
+
 ```python
 for led in range(NUM_UNDERLIGHTS):
     tbot.set_underlight(led, 255, 0, 0, show=False)  # Red
      
 tbot.show_underlighting()
+```
+
+### Disable Underlighting
+
+There may be the case where you want to turn off the underlights, for example to save power, but have them remember what colour you last set when turned back on. For this the `disable_underlighting()` and `show_underlighting()` functions can be used.
+
+In the example below, the underlights are filled with a dim white but not shown. Then in the loop they are repeatedly shown then disabled.
+
+```python
+tbot.fill_underlighting(127, 127, 127, show=False)
+while True:
+    tbot.show_underlighting()
+    time.sleep(0.1)
+    tbot.disable_underlighting()
+    time.sleep(0.5)
 ```
 
 ## Distance Sensor
