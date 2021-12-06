@@ -3,7 +3,11 @@
 import time
 from trilobot import Trilobot, BUTTON_A
 
-print("Trilobot Print Distance Demo\n")
+"""
+TODO
+"""
+print("Trilobot Example: Print Distance\n")
+
 
 tbot = Trilobot()
 

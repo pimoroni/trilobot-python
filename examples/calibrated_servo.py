@@ -3,6 +3,15 @@
 import time
 from trilobot import Trilobot
 
+"""
+TODO
+"""
+print("Trilobot Example: Calibtrated Servo\n")
+
+
+SWEEPS = 10  # How many times to sweep the servo
+INTERVAL = 0.01  # The time in seconds between each step of the sequence
+
 tbot = Trilobot()
 tbot.initialise_servo(-90, 90, 550, 2450)  # Example pulses that map to min and max angles
 
@@ -26,11 +35,17 @@ print("Servo Off")
 tbot.disable_servo()
 
 print("Now Sweep")
-while True:
+
+# Sweep the servo a set number of times
+for i in range(SWEEPS):
+    print("Sweep:", i)
+
     for i in range(-90, 90):
         tbot.set_servo_angle(i)
         time.sleep(0.01)
 
     for i in range(-90, 90):
         tbot.set_servo_angle(0 - i)
-        time.sleep(0.01)
+        time.sleep(INTERVAL)
+
+print("Done")

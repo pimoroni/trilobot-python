@@ -3,14 +3,19 @@
 import time
 from trilobot import Trilobot, BUTTON_A
 
-print("Trilobot Distance Lights Demo\n")
+"""
+TODO
+"""
+print("Trilobot Example: Distance Lights\n")
 
-band1 = 20  # Distance where lights show yellow
-band2 = 80  # Distance where lights show yellow-green
-band3 = 100  # Distance where lights show green
 
-yellow_green_point = 192
-orange_point = 178
+BAND1 = 20  # Distance where lights show yellow
+BAND2 = 80  # Distance where lights show yellow-green
+BAND3 = 100  # Distance where lights show green
+
+YELLOW_GREEN_POINT = 192  # The amount of red to show for the mid-point between green and yellow
+
+tbot = Trilobot()
 
 
 def colour_from_distance(distance):
@@ -24,34 +29,32 @@ def colour_from_distance(distance):
     g = 0
     b = 0
 
-    if distance > band3:
-        # Show lights green for over distance band3
+    if distance > BAND3:
+        # Show green lights for distance over band3
         g = 255
-    elif distance > band2:
-        # Set colour fading from green-yellow to green between distance band2-band3
-        band_min = band2
-        band_max = band3
-        r = int(yellow_green_point - yellow_green_point * (distance - band_min) / (band_max - band_min))
+    elif distance > BAND2:
+        # Set colour fading from green-yellow to green between distance bands 2 and 3
+        band_min = BAND2
+        band_max = BAND3
+        r = int(YELLOW_GREEN_POINT - YELLOW_GREEN_POINT * (distance - band_min) / (band_max - band_min))
         g = 255
-    elif distance > band1:
-        # Set colour fading from yellow to green-yellow between distance band1-band2
-        band_min = band1
-        band_max = band2
-        r = int(255 - (255 - yellow_green_point) * (distance - band_min) / (band_max - band_min))
+    elif distance > BAND1:
+        # Set colour fading from yellow to green-yellow between distance bands 1 and 2
+        band_min = BAND1
+        band_max = BAND2
+        r = int(255 - (255 - YELLOW_GREEN_POINT) * (distance - band_min) / (band_max - band_min))
         g = 255
     elif distance > 0:
         # Set colour fading from red at 0cm to yellow at distance band1
-        band_max = band1 * band1
+        band_max = BAND1 * BAND1
         r = 255
-        g = int(255 * distance * band1 / band_max)
+        g = int(255 * distance * BAND1 / band_max)
     else:
         # Red for closest distance
         r = 255
 
     return (r, g, b)
 
-
-tbot = Trilobot()
 
 while not tbot.read_button(BUTTON_A):
 

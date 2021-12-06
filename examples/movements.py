@@ -3,7 +3,11 @@
 import time
 from trilobot import Trilobot
 
-print("Trilobot Movement Demo\n")
+"""
+A demonstration of all the movement functions of Trilobot.
+"""
+print("Trilobot Example: Movement\n")
+
 
 tbot = Trilobot()
 
@@ -23,28 +27,25 @@ time.sleep(1)
 tbot.turn_right()
 time.sleep(1)
 
-# Half speed
-tbot.forward(0.5)
+tbot.forward(0.5)  # Half speed
 time.sleep(1)
 
-tbot.turn_left(0.5)
+tbot.turn_left(0.5)  # Half speed
 time.sleep(1)
 
-tbot.curve_backward_right(0.75)
+tbot.curve_backward_right(0.75)  # Three quarters speed
 time.sleep(1)
 
-# Full speed
+tbot.forward()  # Full speed
+time.sleep(0.5)
+
+tbot.coast()  # Come to a halt gently
+time.sleep(1)
+
 tbot.forward()
 time.sleep(0.5)
 
-# Come to a halt gently
-tbot.coast()
-time.sleep(1)
-
-# Full speed
-tbot.forward()
-time.sleep(0.5)
-
-# Apply the brakes
-tbot.stop()
+tbot.stop()  # Apply the brakes
 time.sleep(1.0)
+
+print("Done")

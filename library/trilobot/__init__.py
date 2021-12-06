@@ -13,12 +13,6 @@ BUTTON_X = 2
 BUTTON_Y = 3
 NUM_BUTTONS = 4
 
-LED_A = 0
-LED_B = 1
-LED_X = 2
-LED_Y = 3
-NUM_LEDS = 4
-
 # Underlighting LED locations
 LIGHT_FRONT_RIGHT = 0
 LIGHT_FRONT_LEFT = 1
@@ -27,6 +21,15 @@ LIGHT_REAR_LEFT = 3
 LIGHT_REAR_RIGHT = 4
 LIGHT_MIDDLE_RIGHT = 5
 NUM_UNDERLIGHTS = 6
+
+# Useful underlighting groups
+LIGHTS_LEFT = (LIGHT_FRONT_LEFT, LIGHT_MIDDLE_LEFT, LIGHT_REAR_LEFT)
+LIGHTS_RIGHT = (LIGHT_FRONT_RIGHT, LIGHT_MIDDLE_RIGHT, LIGHT_REAR_RIGHT)
+LIGHTS_FRONT = (LIGHT_FRONT_LEFT, LIGHT_FRONT_RIGHT)
+LIGHTS_MIDDLE = (LIGHT_MIDDLE_LEFT, LIGHT_MIDDLE_RIGHT)
+LIGHTS_REAR = (LIGHT_REAR_LEFT, LIGHT_REAR_RIGHT)
+LIGHTS_LEFT_DIAGONAL = (LIGHT_FRONT_LEFT, LIGHT_REAR_RIGHT)
+LIGHTS_RIGHT_DIAGONAL = (LIGHT_FRONT_RIGHT, LIGHT_REAR_LEFT)
 
 # Motor names
 MOTOR_LEFT = 0
@@ -127,19 +130,12 @@ class Trilobot():
                                   self.MOTOR_RIGHT_P: motor_right_p_pwm,
                                   self.MOTOR_RIGHT_N: motor_right_n_pwm}
 
-        GPIO.setup(self.UNDERLIGHTING_EN_PIN, GPIO.OUT)
-        GPIO.output(self.UNDERLIGHTING_EN_PIN, False)
-
         sn3218.reset()
 
-        sn3218.output([0 for i in range(18)])
-        sn3218.enable_leds(0b111111111111111111)
-        sn3218.enable()
-
         self.underlight = [0 for i in range(18)]
-
-        GPIO.output(self.UNDERLIGHTING_EN_PIN, False)
-        sn3218.output([128 for i in range(18)])
+        sn3218.output(self.underlight)
+        sn3218.enable_leds(0b111111111111111111)
+        sn3218.disable()
 
         # setup ultrasonic sensor pins
         GPIO.setup(self.ULTRA_TRIG_PIN, GPIO.OUT)
@@ -168,15 +164,15 @@ class Trilobot():
     ########
     # LEDs #
     ########
-    def set_led(self, led, value):
-        if type(led) is not int:
+    def set_button_led(self, button_led, value):
+        if type(button_led) is not int:
             raise TypeError("led must be an integer")
 
-        if led not in range(NUM_LEDS):
-            raise ValueError("""led must be an integer in the range 0 to 3. For convenience, use the constants:
-                LED_A (0), LED_B (1), LED_X (2), or LED_Y (3)""")
+        if button_led not in range(NUM_BUTTONS):
+            raise ValueError("""button_led must be an integer in the range 0 to 3. For convenience, use the constants:
+                BUTTON_A (0), BUTTON_B (1), BUTTON_X (2), or BUTTON_Y (3)""")
 
-        pwm = self.led_pwm_mapping[self.leds[led]]
+        pwm = self.led_pwm_mapping[self.leds[button_led]]
         if isinstance(value, bool):
             if value:
                 pwm.ChangeDutyCycle(100)
@@ -242,7 +238,6 @@ class Trilobot():
     #################
     # Motor Helpers #
     #################
-
     def forward(self, speed=1.0):
         self.set_motor_speeds(speed, speed)
 
@@ -278,7 +273,10 @@ class Trilobot():
     #################
     def show_underlighting(self):
         sn3218.output(self.underlight)
-        GPIO.output(self.UNDERLIGHTING_EN_PIN, True)
+        sn3218.enable()
+
+    def disable_underlighting(self):
+        sn3218.disable()
 
     def set_underlight(self, light, r_color, g=None, b=None, show=True):
         if type(light) is not int:
@@ -351,69 +349,28 @@ class Trilobot():
     #########################
     # Underlighting Helpers #
     #########################
-    def set_left_underlights(self, r_color, g=None, b=None, show=True):
-        self.set_underlight(LIGHT_FRONT_LEFT, r_color, g, b, show=False)
-        self.set_underlight(LIGHT_MIDDLE_LEFT, r_color, g, b, show=False)
-        self.set_underlight(LIGHT_REAR_LEFT, r_color, g, b, show=show)
+    def set_underlights(self, lights, r_color, g=None, b=None, show=True):
+        if type(lights) != list and type(lights) != tuple:
+            raise TypeError("lights must be a list or tuple containing the numbers for the underlights to set (from 0 to 5)")
 
-    def set_left_underlights_hsv(self, h, s=1, v=1, show=True):
+        light_count = len(lights)
+        if light_count > NUM_UNDERLIGHTS:
+            raise ValueError("lights contains more values than the number of underlights available")
+        if light_count == 0:
+            raise ValueError("lights cannot be empty")
+
+        if light_count > 1:
+            for i in range(0, light_count - 1):
+                self.set_underlight(lights[i], r_color, g, b, show=False)
+
+        self.set_underlight(lights[light_count - 1], r_color, g, b, show=show)
+
+    def set_underlights_hsv(self, lights, h, s=1, v=1, show=True):
         color = [i * 255 for i in hsv_to_rgb(h, s, v)]
-        self.set_underlight(LIGHT_FRONT_LEFT, color, show=False)
-        self.set_underlight(LIGHT_MIDDLE_LEFT, color, show=False)
-        self.set_underlight(LIGHT_REAR_LEFT, color, show=show)
+        self.set_underlights(lights, color, show=show)
 
-    def set_right_underlights(self, r_color, g=None, b=None, show=True):
-        self.set_underlight(LIGHT_FRONT_RIGHT, r_color, g, b, show=False)
-        self.set_underlight(LIGHT_MIDDLE_RIGHT, r_color, g, b, show=False)
-        self.set_underlight(LIGHT_REAR_RIGHT, r_color, g, b, show=show)
-
-    def set_right_underlights_hsv(self, h, s=1, v=1, show=True):
-        color = [i * 255 for i in hsv_to_rgb(h, s, v)]
-        self.set_underlight(LIGHT_FRONT_RIGHT, color, show=False)
-        self.set_underlight(LIGHT_MIDDLE_RIGHT, color, show=False)
-        self.set_underlight(LIGHT_REAR_RIGHT, color, show=show)
-
-    def set_front_underlights(self, r_color, g=None, b=None, show=True):
-        self.set_underlight(LIGHT_FRONT_LEFT, r_color, g, b, show=False)
-        self.set_underlight(LIGHT_FRONT_RIGHT, r_color, g, b, show=show)
-
-    def set_front_underlights_hsv(self, h, s=1, v=1, show=True):
-        color = [i * 255 for i in hsv_to_rgb(h, s, v)]
-        self.set_underlight(LIGHT_FRONT_LEFT, color, show=False)
-        self.set_underlight(LIGHT_FRONT_RIGHT, color, show=show)
-
-    def set_middle_underlights(self, r_color, g=None, b=None, show=True):
-        self.set_underlight(LIGHT_MIDDLE_LEFT, r_color, g, b, show=False)
-        self.set_underlight(LIGHT_MIDDLE_RIGHT, r_color, g, b, show=show)
-
-    def set_middle_underlights_hsv(self, h, s=1, v=1, show=True):
-        color = [i * 255 for i in hsv_to_rgb(h, s, v)]
-        self.set_underlight(LIGHT_MIDDLE_LEFT, color, show=False)
-        self.set_underlight(LIGHT_MIDDLE_RIGHT, color, show=show)
-
-    def set_rear_underlights(self, r_color, g=None, b=None, show=True):
-        self.set_underlight(LIGHT_REAR_LEFT, r_color, g, b, show=False)
-        self.set_underlight(LIGHT_REAR_RIGHT, r_color, g, b, show=show)
-
-    def set_rear_underlights_hsv(self, h, s=1, v=1, show=True):
-        color = [i * 255 for i in hsv_to_rgb(h, s, v)]
-        self.set_underlight(LIGHT_REAR_LEFT, color, show=False)
-        self.set_underlight(LIGHT_REAR_RIGHT, color, show=show)
-
-    def clear_left_underlights(self, show=True):
-        self.set_left_underlights(0, 0, 0, show=show)
-
-    def clear_right_underlights(self, show=True):
-        self.set_right_underlights(0, 0, 0, show=show)
-
-    def clear_front_underlights(self, show=True):
-        self.set_front_underlights(0, 0, 0, show=show)
-
-    def clear_middle_underlights(self, show=True):
-        self.set_middle_underlights(0, 0, 0, show=show)
-
-    def clear_rear_underlights(self, show=True):
-        self.set_rear_underlights(0, 0, 0, show=show)
+    def clear_underlights(self, lights, show=True):
+        self.set_underlights(lights, 0, 0, 0, show=show)
 
     ##############
     # Ultrasound #
@@ -562,12 +519,13 @@ if __name__ == "__main__":
     print("Trilobot Function Test")
 
     time.sleep(2.0)
+    tbot.fill_underlighting(127, 127, 127, show=False)
     for i in range(0, 10):
         print(i)
-        GPIO.output(tbot.UNDERLIGHTING_EN_PIN, True)
+        tbot.show_underlighting()
         time.sleep(0.1)
-        GPIO.output(tbot.UNDERLIGHTING_EN_PIN, False)
-        time.sleep(0.1)
+        tbot.disable_underlighting()
+        time.sleep(0.5)
 
     for led in range(NUM_UNDERLIGHTS):
         tbot.clear_underlighting(show=False)
@@ -606,25 +564,25 @@ if __name__ == "__main__":
             a = min(a + 0.01, 1.0)
         else:
             a = max(a - 0.01, 0.0)
-        tbot.set_led(LED_A, a)
+        tbot.set_button_led(BUTTON_A, a)
 
         if tbot.read_button(BUTTON_B):
             b = min(b + 0.01, 1.0)
         else:
             b = max(b - 0.01, 0.0)
-        tbot.set_led(LED_B, b)
+        tbot.set_button_led(BUTTON_B, b)
 
         if tbot.read_button(BUTTON_X):
             x = min(x + 0.01, 1.0)
         else:
             x = max(x - 0.01, 0.0)
-        tbot.set_led(LED_X, x)
+        tbot.set_button_led(BUTTON_X, x)
 
         if tbot.read_button(BUTTON_Y):
             y = min(y + 0.01, 1.0)
         else:
             y = max(y - 0.01, 0.0)
-        tbot.set_led(LED_Y, y)
+        tbot.set_button_led(BUTTON_Y, y)
 
         tbot.set_left_speed(a - b)
         tbot.set_right_speed(x - y)
