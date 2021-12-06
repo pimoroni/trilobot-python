@@ -69,7 +69,7 @@ Further demonstrating Trilobot's ultrasound distance sensor, this demonstration 
 ### Flash Underlights
 [flash_underlights.py](flash_underlights.py)
 
-<-- TODO -->
+This example will demonstrate the RGB underlights of Trilobot, by making them flash in a red, green and blue sequence.
 
 ### Distance Lights
 [distance_lights.py](distance_lights.py)
