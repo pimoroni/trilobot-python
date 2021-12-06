@@ -74,7 +74,7 @@ This example will demonstrate the RGB underlights of Trilobot, by making them fl
 ### Distance Lights
 [distance_lights.py](distance_lights.py)
 
-<-- TODO -->
+This brings together the underlights and the distance sensor, using the underlights to indicate if something is too close with red, orange, green indications. It also prints distances on the console.
 
 ### Show Underlighting
 [show_underlighting.py](show_underlighting.py)
