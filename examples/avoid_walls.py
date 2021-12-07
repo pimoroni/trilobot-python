@@ -3,7 +3,9 @@
 from trilobot import Trilobot, BUTTON_A
 
 """
-TODO
+Further demonstrating Trilobot's ultrasound distance sensor, this example will drive forward and then turn right to avoid obstacles it detects them with the sensor.
+
+Stop the example by pressing button A.
 """
 print("Trilobot Example: Avoid Walls\n")
 

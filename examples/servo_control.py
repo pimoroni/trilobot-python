@@ -5,7 +5,7 @@ import time
 from trilobot import Trilobot
 
 """
-TODO
+An example of how to command a servo connected to Trilobot to move and perform sweeping motions.
 """
 print("Trilobot Example: Servo Control\n")
 

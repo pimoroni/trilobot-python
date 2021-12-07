@@ -4,7 +4,9 @@ import time
 from trilobot import Trilobot, BUTTON_A
 
 """
-TODO
+This demonstrates how to read distance values from Trilobot's ultrasound distance sensor. It will print the values it reads onto the console in cm, along with the time taken to get the readings.
+
+Stop the example by pressing button A.
 """
 print("Trilobot Example: Print Distance\n")
 

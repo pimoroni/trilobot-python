@@ -3,7 +3,7 @@
 from trilobot import Trilobot, BUTTON_A
 
 """
-TODO
+Shows how to read one of Trilobots buttons and tell if it was pressed or released.
 """
 print("Trilobot Example: Single Button\n")
 

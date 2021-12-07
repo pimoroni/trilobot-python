@@ -4,7 +4,7 @@ import time
 from trilobot import *
 
 """
-Examples of how to set Trilobot groups of underlights
+Examples of how to set multiple Trilobot underlights to a color with one command.
 """
 print("Trilobot Example: Underlighting Groups\n")
 

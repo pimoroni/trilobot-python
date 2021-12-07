@@ -4,7 +4,7 @@ import time
 from trilobot import Trilobot, NUM_BUTTONS
 
 """
-Flash the button LEDs.
+Shows how to turn the button LEDs on and off, by having them flash.
 """
 print("Trilobot Example: Flash Button LEDs\n")
 

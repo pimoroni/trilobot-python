@@ -3,7 +3,7 @@
 from trilobot import Trilobot, NUM_BUTTONS
 
 """
-TODO
+Shows how to read all of Trilobots buttons and tell if they were pressed or released.
 """
 print("Trilobot Example: Multiple Buttons\n")
 

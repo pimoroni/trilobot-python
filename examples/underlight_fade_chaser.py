@@ -4,7 +4,7 @@ import time
 from trilobot import *
 
 """
-TODO
+A smoother chaser animation example on Trilobot's underlights, using fading on each light.
 """
 print("Trilobot Example: Underlight Fade Chaser\n")
 
