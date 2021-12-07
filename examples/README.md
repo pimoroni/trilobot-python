@@ -140,4 +140,4 @@ From there you can drive your Trilobot around using the left analog stick or d-p
 
 If your controller becomes disconnected Trilobot will stop moving and show a slow red pulsing animation on its underlights. Simply reconnect your controller and after 10 to 20 seconds, the program should find your controller again and start up again.
 
-Support for further controllers can be added to [library/trilobot/controller_mappings.py](library/trilobot/controller_mappings.py)
+Support for further controllers can be added to [library/trilobot/controller_mappings.py](../library/trilobot/controller_mappings.py)
