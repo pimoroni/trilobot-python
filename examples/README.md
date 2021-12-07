@@ -20,7 +20,7 @@
 - [Servo Examples](#servo-examples)
   - [Servo Control](#servo-control)
   - [Calibrated Servo](#calibrated-servo)
-- [Advanced Example](#advanced-example)
+- [Advanced Examples](#advanced-examples)
   - [Remote Control](#remote-control)
 
 
