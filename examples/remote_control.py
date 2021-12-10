@@ -119,7 +119,7 @@ while True:
             h -= 1.0
 
     else:
-        # Run a slow red pusling animation to show there is no controller connected
+        # Run a slow red pulsing animation to show there is no controller connected
         val = (math.sin(v) / 2.0) + 0.5
         tbot.fill_underlighting(val * 127, 0, 0)
         v += math.pi / 200
