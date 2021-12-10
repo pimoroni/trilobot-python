@@ -46,6 +46,11 @@ Shows how to turn the button LEDs on and off, by having them flash.
 
 Shows how to control the brightness of the button LEDs, by having them fade up and down.
 
+### Reactive Button LEDs
+[reactive_button_leds.py](reactive_button_leds.py)
+
+Shows how to use the buttons to make their neighbouring LEDs fade up when pressed and fade down when released.
+
 ### Print Distance
 
 [print_distance.py](print_distance.py)

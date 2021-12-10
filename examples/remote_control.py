@@ -15,6 +15,8 @@ From there you can drive your Trilobot around using the left analog stick or d-p
 If your controller becomes disconnected Trilobot will stop moving and show a slow red pulsing animation on its underlights. Simply reconnect your controller and after 10 to 20 seconds, the program should find your controller again and start up again.
 
 Support for further controllers can be added to library/trilobot/controller_mappings.py
+
+Press CTRL + C to exit.
 """
 print("Trilobot Example: Remote Control\n")
 
@@ -49,11 +51,6 @@ v = 0
 spacing = 1.0 / NUM_UNDERLIGHTS
 
 tank_steer = False
-
-a = 0
-b = 0
-x = 0
-y = 0
 while True:
 
     if not controller.is_connected():
@@ -109,33 +106,5 @@ while True:
         val = (math.sin(v) / 2.0) + 0.5
         tbot.fill_underlighting(val * 127, 0, 0)
         v += math.pi / 200
-
-    if tbot.read_button(BUTTON_A):
-        print("A pressed")
-        a = min(a + 0.01, 1.0)
-    else:
-        a = max(a - 0.01, 0.0)
-    tbot.set_button_led(BUTTON_A, a)
-
-    if tbot.read_button(BUTTON_B):
-        b = min(b + 0.01, 1.0)
-        print("B pressed")
-    else:
-        b = max(b - 0.01, 0.0)
-    tbot.set_button_led(BUTTON_B, b)
-
-    if tbot.read_button(BUTTON_X):
-        x = min(x + 0.01, 1.0)
-        print("X pressed")
-    else:
-        x = max(x - 0.01, 0.0)
-    tbot.set_button_led(BUTTON_X, x)
-
-    if tbot.read_button(BUTTON_Y):
-        y = min(y + 0.01, 1.0)
-        print("Y pressed")
-    else:
-        y = max(y - 0.01, 0.0)
-    tbot.set_button_led(BUTTON_Y, y)
 
     time.sleep(0.01)
