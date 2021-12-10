@@ -57,8 +57,6 @@ Shows how to use the buttons to make their neighbouring LEDs fade up when presse
 
 This demonstrates how to read distance values from Trilobot's ultrasound distance sensor. It will print the values it reads onto the console in cm, along with the time taken to get the readings.
 
-Stop the example by pressing button A.
-
 
 ## Motor Examples
 
@@ -73,14 +71,10 @@ An example of how to perform simple movements of Trilobot.
 
 A demonstration of Trilobot's ultrasound sensor that has it keep an object a goal distance in front of it. If the object gets closer Trilobot will reverse, if the object gets further away Trilobot will drive forward.
 
-Stop the example by pressing button A.
-
 ### Avoid Walls
 [avoid_walls.py](avoid_walls.py)
 
 Further demonstrating Trilobot's ultrasound distance sensor, this example will drive forward and then turn right to avoid obstacles it detects them with the sensor.
-
-Stop the example by pressing button A.
 
 
 ## Lighting Examples
@@ -94,8 +88,6 @@ This example will demonstrate the RGB underlights of Trilobot, by making them fl
 [distance_lights.py](distance_lights.py)
 
 This brings together the underlights and the distance sensor, using the underlights to indicate if something is too close with red, orange, green indications. It also prints distances on the console.
-
-Stop the example by pressing button A.
 
 ### Underlighting Groups
 [underlighting_groups.py](underlighting_groups.py)
