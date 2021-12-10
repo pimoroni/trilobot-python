@@ -4,7 +4,9 @@ import time
 from trilobot import Trilobot, BUTTON_A
 
 """
-TODO
+This brings together the underlights and the distance sensor, using the underlights to indicate if something is too close with red, orange, green indications. It also prints distances on the console.
+
+Stop the example by pressing button A.
 """
 print("Trilobot Example: Distance Lights\n")
 

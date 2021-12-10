@@ -3,7 +3,9 @@
 from trilobot import Trilobot, NUM_BUTTONS
 
 """
-TODO
+Shows how to read all of Trilobots buttons and tell if they were pressed or released.
+
+Press CTRL + C to exit.
 """
 print("Trilobot Example: Multiple Buttons\n")
 

@@ -4,7 +4,7 @@ import time
 from trilobot import Trilobot
 
 """
-Flash the underlighting LEDs red, green and blue.
+This example will demonstrate the RGB underlights of Trilobot, by making them flash in a red, green and blue sequence.
 """
 print("Trilobot Example: Flash Underlights\n")
 

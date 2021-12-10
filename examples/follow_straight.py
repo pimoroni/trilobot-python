@@ -5,6 +5,8 @@ from trilobot import Trilobot, BUTTON_A
 
 """
 A demonstration of Trilobot's ultrasound sensor that has it keep an object a goal distance in front of it. If the object gets closer Trilobot will reverse, if the object gets further away Trilobot will drive forward.
+
+Stop the example by pressing button A.
 """
 print("Trilobot Example: Follow Straight\n")
 

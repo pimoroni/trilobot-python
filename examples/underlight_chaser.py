@@ -4,7 +4,9 @@ import time
 from trilobot import *
 
 """
-Make an LED chasing animation with the underlighting
+An example chaser animation using Trilobot's underlighting.
+
+Press CTRL + C to exit.
 """
 
 print("Trilobot Example: Underlight Chaser\n")

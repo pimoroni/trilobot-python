@@ -4,7 +4,7 @@ import time
 from trilobot import Trilobot, NUM_BUTTONS
 
 """
-Has the button LEDs fade up and down over time.
+Shows how to control the brightness of the button LEDs, by having them fade up and down.
 """
 print("Trilobot Example: Fade Button LEDs\n")
 

@@ -4,7 +4,7 @@ import time
 from trilobot import Trilobot
 
 """
-A demonstration of all the movement functions of Trilobot.
+An example of how to perform simple movements of Trilobot.
 """
 print("Trilobot Example: Movement\n")
 
