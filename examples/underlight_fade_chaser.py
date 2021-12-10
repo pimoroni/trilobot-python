@@ -5,6 +5,8 @@ from trilobot import *
 
 """
 A smoother chaser animation example on Trilobot's underlights, using fading on each light.
+
+Press CTRL + C to exit.
 """
 print("Trilobot Example: Underlight Fade Chaser\n")
 

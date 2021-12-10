@@ -4,6 +4,8 @@ from trilobot import Trilobot, BUTTON_A
 
 """
 Shows how to read one of Trilobots buttons and tell if it was pressed or released.
+
+Press CTRL + C to exit.
 """
 print("Trilobot Example: Single Button\n")
 

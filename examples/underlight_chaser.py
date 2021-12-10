@@ -5,6 +5,8 @@ from trilobot import *
 
 """
 An example chaser animation using Trilobot's underlighting.
+
+Press CTRL + C to exit.
 """
 
 print("Trilobot Example: Underlight Chaser\n")
