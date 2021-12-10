@@ -15,7 +15,7 @@ This will create a `Trilobot` class called `tbot` that will be used in the rest 
 ## Buttons
 
 Trilobot has four buttons to its rear, labelled A, B, X, and Y.
-These can be read using the `read_button()` function, which accepts a number between `0` and `3`. For convenience, each button can be referred to using these constants.
+These can be read using the `read_button(button)` function, which accepts a button number between `0` and `3`. For convenience, each button can be referred to using these constants.
 
 * `BUTTON_A` = 0
 * `BUTTON_B` = 1
@@ -31,9 +31,9 @@ state_a = tbot.read_button(BUTTON_A)
 You can also get the number of buttons using the `NUM_BUTTONS` constant.
 
 
-## LEDs
+## Button LEDs
 
-Next to each button on Trilobot is a mono LED. These can be controlled using the `set_button_led()` function, which accepts a number from `0` to `3` like the buttons, followed by either `True` for On, `False` for Off, or a number between `0.0` and `1.0` for any brightness in between.
+Next to each button on Trilobot is a mono LED. These can be controlled using the `set_button_led(button_led, value)` function, which accepts a button number from `0` to `3` like the buttons, followed by either `True` for On, `False` for Off, or a number between `0.0` and `1.0` for any brightness in between.
 
 For convenience, each LED can be referred to using the same constants as the buttons.
 
@@ -48,20 +48,20 @@ You can get the number of LEDs using the same constant as the buttons.
 
 ## Motors
 
-Trilobot features two motors with indepentent control, enabling [differential steering](https://en.wikipedia.org/wiki/Differential_steering), whereby the speed of one motor can be controlled independently of the other.
+Trilobot features two motors with independent control, enabling [differential steering](https://en.wikipedia.org/wiki/Differential_steering), whereby the speed of one motor can be controlled separately of the other.
 
 There are several ways these motors can be commanded from code:
 
 ### Simple Movements
 
-* `forward()`
-* `backward()`
-* `turn_left()`
-* `turn_right()`
-* `curve_forward_left()`
-* `curve_forward_right()`
-* `curve_backward_left()`
-* `curve_backward_right()`
+* `forward(speed=1.0)`
+* `backward(speed=1.0)`
+* `turn_left(speed=1.0)`
+* `turn_right(speed=1.0)`
+* `curve_forward_left(speed=1.0)`
+* `curve_forward_right(speed=1.0)`
+* `curve_backward_left(speed=1.0)`
+* `curve_backward_right(speed=1.0)`
 
 Each of the above functions will drive Trilobot at full speed. To slow the robot down, include a number between `0.0` and `1.0` within the brackets. For example `forward(0.5)` will drive forward at half speed.
 
@@ -69,20 +69,20 @@ To stop Trilobot from moving, simply call `stop()`. This will make the robot sto
 
 ### Advanced Movements
 
-To get more control over Trilobot's movements, each motor can be individually controlled using `set_left_speed()` or `set_right_speed()`. These take a number between `-1.0` and `1.0`, where positive values will drive the motor forward and negative values will drive the motor backward. The below example will have Trilobot curving slowly to the right.
+To get more control over Trilobot's movements, each motor can be individually controlled using `set_left_speed(speed)` or `set_right_speed(speed)`. These take a number between `-1.0` and `1.0`, where positive values will drive the motor forward and negative values will drive the motor backward. The below example will have Trilobot curving slowly to the right.
 
 ```python
 tbot.set_left_speed(1.0)
 tbot.set_right_speed(0.5)
 ```
 
-If the speeds of both motors are regularly set together, then this can be shortened to a single call to `set_motor_speeds()`. This simplifies the curving right example to:
+If the speeds of both motors are regularly set together, then this can be shortened to a single call to `set_motor_speeds(l_speed, r_speed)`. This simplifies the curving right example to:
 
 ```python
 tbot.set_motor_speeds(1.0, 0.5)
 ```
 
-A final way the motors can be controlled is by using `set_motor_speed()`, which accepts a number from `0` to `1`, followed by a number between `-1.0` and `1.0`.
+A final way the motors can be controlled is by using `set_motor_speed(motor, speed)`, which accepts a motor number from `0` to `1`, followed by a number between `-1.0` and `1.0`.
 
 For convenience, each motor can be referred to using these constants.
 * `MOTOR_LEFT` = 0
@@ -96,7 +96,7 @@ tbot.set_motor_speed(MOTOR_LEFT, 0.5)
 
 You can also get the number of motors using the `NUM_MOTORS` constant.
 
-To disable the motors, call `disable_motors()`. This stops their signals and disables the motor driver. Setting any motor speed will enable the driver again.
+To disable the motors, call `disable_motors()`. This stops their signals and disables the motor driver. Setting any motor speed will enable the driver again. Note that calling `coast()` is the same as disabling the motors.
 
 
 ## Underlighting
@@ -107,7 +107,7 @@ There are several ways these lights can be commanded from code:
 
 ### Single Light
 
-A single underlight can be controlled using either `set_underlight()`, which all accept a number from `0` to `5`, followed by the colour either as separate red, green, and blue values between `0` and `255`, a list/tuple of three numbers, or a hex colour code. Similarly `set_underlight_hsv()` lets you provide a colour as hue, saturation, and value numbers between `0.0` and `1.0`, and `clear_underlight()` sets the colour to zero.
+A single underlight can be controlled using either `set_underlight(light, r_color, g=None, b=None, show=True)`, which all accept a light number from `0` to `5`, followed by the colour either as separate red, green, and blue values between `0` and `255`, a list/tuple of three numbers, or a hex colour code. Similarly `set_underlight_hsv(light, h, s=1, v=1, show=True)` lets you provide a colour as hue, saturation, and value numbers between `0.0` and `1.0`, and `clear_underlight(light, show=True)` sets the colour to zero.
 
 For convenience, each light can be referred to using these constants.
 * `LIGHT_FRONT_RIGHT` = 0
@@ -126,13 +126,21 @@ tbot.set_underlight_hsv(LIGHT_REAR_LEFT, 0.0, 1.0, 1.0)  # Red
 tbot.clear_underlight(LIGHT_REAR_RIGHT)  # Off
 ```
 
+You can also set a colour using a variable:
+
+```python
+YELLOW = (255, 255, 0)
+tbot.set_underlight(LIGHT_MIDDLE_LEFT, YELLOW)  # Yellow
+```
+
+
 ### All Lights
 
-To set all of the underlights to a colour at once, `fill_underlighting()` and `fill_underlighting_hsv()` can be used. These accept a colour either as RGB or HSV in the same format as the single light functions. Similarly, `clear_underlighting()` sets all the LEDs to zero.
+To set all of the underlights to a colour at once, `fill_underlighting(r_color, g=None, b=None, show=True)` and `fill_underlighting_hsv(h, s=1, v=1, show=True)` can be used. These accept a colour either as RGB or HSV in the same format as the single light functions. Similarly, `clear_underlighting(show=True)` sets all the LEDs to zero.
 
 ### Grouped Lights
 
-To make some animations easier to create, several underlights at once using the `set_underlights()`, `set_underlights_hsv()`, and `clear_underlights()` functions. Rather than a single number for the light, they instead take a list or tuple of the light numbers.
+To make some animations easier to create, several underlights at once using the `set_underlights(lights, r_color, g=None, b=None, show=True)`, `set_underlights_hsv(ights, h, s=1, v=1, show=True)`, and `clear_underlights(lights, show=True)` functions. Rather than a single number for the light, they instead take a list or tuple of the light numbers.
 
 As an example, here are several lights being set in various ways:
 
@@ -185,7 +193,7 @@ while True:
 
 ## Distance Sensor
 
-Trilobot features a front mounted ultrasonic distance sensor. This sensor can be read using the `read_distance()` function, which will return a measured distance in centrimetres.
+Trilobot features a front mounted ultrasonic distance sensor. This sensor can be read using the `read_distance(timeout=50, samples=3, offset=190000)` function, which will return a measured distance in centrimetres.
 
 Some default values are used to get these readings, which can be overwritten with the following parameters:
 
@@ -213,4 +221,4 @@ The following methods are available from code:
 * `servo_to_max()`: Moves the servo to its maximum position
 * `servo_to_percent(value, value_min=0, value_max=1, angle_min=-90, angle_max=+90)`: Moves the servo to a position that is a percentage between the minimum and maximum angles specified.
 
-* `initialise_servo(min_angle=-90, max_angle=90, min_pulse_us=500, max_pulse_us=2500)`: Initialises servo control. This gets called automatically when using any of the above functions (other than `disable_servo()`) with default parameters. Calling this from code before that lets you adjust the exact pulse timings that correspond with the minimum and maximum angles your servo is able to reach.
+* `initialise_servo(min_angle=-90, max_angle=90, min_pulse_us=500, max_pulse_us=2500)`: Initialises servo control. This gets called automatically when using any of the above functions (other than `disable_servo()`) with default parameters. Calling this function before any of the other functions lets you set the exact pulse timings that correspond with the minimum and maximum angles your servo is able to reach. The subsequent servo function calls will then use these timings.
