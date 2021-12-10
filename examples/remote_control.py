@@ -33,6 +33,7 @@ controller = controller_mappings.choose_controller()
 # Attempt to connect to the created controller
 controller.connect()
 
+# Run an amination on the underlights to show a controller has been selected
 for led in range(NUM_UNDERLIGHTS):
     tbot.clear_underlighting(show=False)
     tbot.set_underlight(led, RED)
@@ -58,51 +59,67 @@ while True:
         controller.reconnect(10, True)
 
     try:
+        # Get the latest information from the controller. This will throw a RuntimeError if the controller connection is lost
         controller.update()
     except RuntimeError:
+        # Lost contact with the controller, so disable the motors to stop Trilobot if it was moving
         tbot.disable_motors()
 
     if controller.is_connected():
+
+        # Read the controller bumpers to see if the tank steer mode has been enabled or disabled
+        try:
+            if controller.read_button("L1") and tank_steer:
+                tank_steer = False
+                print("Tank Steering Disabled")
+            if controller.read_button("R1") and not tank_steer:
+                tank_steer = True
+                print("Tank Steering Enabled")
+        except ValueError:
+            # Cannot find 'L1' or 'R1' on this controller
+            print("Tank Steering Not Available")
+
+        try:
+            if tank_steer:
+                # Have the left stick's Y axis control the left motor, and the right stick's Y axis control the right motor
+                ly = controller.read_axis("LY")
+                ry = controller.read_axis("RY")
+                tbot.set_left_speed(-ly)
+                tbot.set_right_speed(-ry)
+            else:
+                # Have the left stick control both motors
+                lx = controller.read_axis("LX")
+                ly = 0 - controller.read_axis("LY")
+                tbot.set_left_speed(ly + lx)
+                tbot.set_right_speed(ly - lx)
+        except ValueError:
+            # Cannot find 'LX', 'LY', or 'RY' on this controller
+            tbot.disable_motors()
+
+        # Run a rotating rainbow effect on the RGB underlights
         for led in range(NUM_UNDERLIGHTS):
             led_h = h + (led * spacing)
             if led_h >= 1.0:
                 led_h -= 1.0
 
             try:
-                if controller.read_button("L1") and tank_steer:
-                    tank_steer = False
-                    print("Tank Steering Disabled")
-                if controller.read_button("R1") and not tank_steer:
-                    tank_steer = True
-                    print("Tank Steering Enabled")
-            except ValueError:  # Cannot find 'L1' or 'R1'
-                print("Tank Steering Not Available")
-
-            try:
                 if controller.read_button("A"):
                     tbot.set_underlight_hsv(led, 0.0, 0.0, 0.7, show=False)
                 else:
                     tbot.set_underlight_hsv(led, led_h, show=False)
-            except ValueError:  # Cannot find 'A'
+            except ValueError:
+                # Cannot find 'A' on this controller
                 tbot.set_underlight_hsv(led, led_h, show=False)
 
         tbot.show_underlighting()
+
+        # Advance the rotating rainbow effect
         h += 0.5 / 360
         if h >= 1.0:
             h -= 1.0
 
-        if tank_steer:
-            ly = controller.read_axis("LY")
-            ry = controller.read_axis("RY")
-            tbot.set_left_speed(-ly)
-            tbot.set_right_speed(-ry)
-        else:
-            lx = controller.read_axis("LX")
-            ly = 0 - controller.read_axis("LY")
-            tbot.set_left_speed(ly + lx)
-            tbot.set_right_speed(ly - lx)
-
     else:
+        # Run a slow red pusling animation to show there is no controller connected
         val = (math.sin(v) / 2.0) + 0.5
         tbot.fill_underlighting(val * 127, 0, 0)
         v += math.pi / 200
