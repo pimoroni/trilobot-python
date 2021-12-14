@@ -71,7 +71,7 @@ class Trilobot():
     SPEED_OF_SOUND_CM_NS = 343 * 100 / 1E9  # 0.0000343 cm / ns
 
     def __init__(self):
-        """Initialise trilobot
+        """ Initialise trilobot's hardware functions
         """
 
         GPIO.setwarnings(False)
@@ -145,6 +145,8 @@ class Trilobot():
         self.servo = None
 
     def __del__(self):
+        """ Clean up GPIO and underlighting when the class is deleted.
+        """
         sn3218.disable()
         GPIO.cleanup()
 
@@ -152,6 +154,10 @@ class Trilobot():
     # Buttons #
     ###########
     def read_button(self, button):
+        """ Return whether or not a given button is pressed.
+        button: the ID of the button to read the state of
+        Returns True for pressed, False for released
+        """
         if type(button) is not int:
             raise TypeError("button must be an integer")
 
@@ -165,6 +171,10 @@ class Trilobot():
     # LEDs #
     ########
     def set_button_led(self, button_led, value):
+        """ Turns the given button LED on or off, or to a brighness value.
+        button_led: the ID of the button LED to set the state of
+        value: either True for on, False for off, or a number between 0.0 and 1.0
+        """
         if type(button_led) is not int:
             raise TypeError("led must be an integer")
 
@@ -187,6 +197,10 @@ class Trilobot():
     # Motors #
     ##########
     def set_motor_speed(self, motor, speed):
+        """ Sets the speed of the given motor.
+        motor: the ID of the motor to set the state of
+        speed: the motor speed, between -1.0 and 1.0
+        """
         if type(motor) is not int:
             raise TypeError("motor must be an integer")
 
@@ -219,16 +233,28 @@ class Trilobot():
             pwm_n.ChangeDutyCycle(100)
 
     def set_motor_speeds(self, l_speed, r_speed):
+        """ Sets the speeds of both motors at once.
+        l_speed: the left motor speed, between -1.0 and 1.0
+        r_speed: the right motor speed, between -1.0 and 1.0
+        """
         self.set_motor_speed(MOTOR_LEFT, l_speed)
         self.set_motor_speed(MOTOR_RIGHT, r_speed)
 
     def set_left_speed(self, speed):
+        """ Sets the speed of the left motor only.
+        speed: the speed, between -1.0 and 1.0
+        """
         self.set_motor_speed(MOTOR_LEFT, speed)
 
     def set_right_speed(self, speed):
+        """ Sets the speed of the right motor only.
+        speed: the speed, between -1.0 and 1.0
+        """
         self.set_motor_speed(MOTOR_RIGHT, speed)
 
     def disable_motors(self):
+        """ Disables both motors, allowing them to spin freely.
+        """
         GPIO.output(self.MOTOR_EN_PIN, False)
         self.motor_pwm_mapping[self.MOTOR_LEFT_P].ChangeDutyCycle(0)
         self.motor_pwm_mapping[self.MOTOR_LEFT_N].ChangeDutyCycle(0)
@@ -239,46 +265,85 @@ class Trilobot():
     # Motor Helpers #
     #################
     def forward(self, speed=1.0):
+        """ Drives Trilobot forward.
+        speed: the speed to drive at, between 0.0 and 1.0
+        """
         self.set_motor_speeds(speed, speed)
 
     def backward(self, speed=1.0):
+        """ Drives Trilobot backward.
+        speed: the speed to drive at, between 0.0 and 1.0
+        """
         self.set_motor_speeds(-speed, -speed)
 
     def turn_left(self, speed=1.0):
+        """ Turns Trilobot left.
+        speed: the speed to turn at, between 0.0 and 1.0
+        """
         self.set_motor_speeds(-speed, speed)
 
     def turn_right(self, speed=1.0):
+        """ Turns Trilobot right.
+        speed: the speed to turn at, between 0.0 and 1.0
+        """
         self.set_motor_speeds(speed, -speed)
 
     def curve_forward_left(self, speed=1.0):
+        """ Drives Trilobot forward and to the left.
+        speed: the speed to drive at, between 0.0 and 1.0
+        """
         self.set_motor_speeds(0.0, speed)
 
     def curve_forward_right(self, speed=1.0):
+        """ Drives Trilobot forward and to the right.
+        speed: the speed to drive at, between 0.0 and 1.0
+        """
         self.set_motor_speeds(speed, 0.0)
 
     def curve_backward_left(self, speed=1.0):
+        """ Drives Trilobot backward and to the left.
+        speed: the speed to drive at, between 0.0 and 1.0
+        """
         self.set_motor_speeds(0.0, -speed)
 
     def curve_backward_right(self, speed=1.0):
+        """ Drives Trilobot backward and to the right.
+        speed: the speed to drive at, between 0.0 and 1.0
+        """
         self.set_motor_speeds(-speed, 0.0)
 
     def stop(self):
+        """ Stops Trilobot from driving, sharply.
+        """
         self.set_motor_speeds(0.0, 0.0)
 
     def coast(self):
+        """ Stops Trilobot from driving, slowly.
+        """
         self.disable_motors()
 
     #################
     # Underlighting #
     #################
     def show_underlighting(self):
+        """ Shows the previously stored colors on Trilobot's underlights.
+        """
         sn3218.output(self.underlight)
         sn3218.enable()
 
     def disable_underlighting(self):
+        """ Disables Trilobot's underlighting, preserving the last set colors.
+        """
         sn3218.disable()
 
     def set_underlight(self, light, r_color, g=None, b=None, show=True):
+        """ Sets a single underlight to a given RGB color.
+        light: the ID of the light to set the color of
+        r_color: the red component of the color (from 0 to 255), or a list/tuple containing all three color components.
+        g: the green component of the color (from 0 to 255), if r_color was not given a list/tuple
+        b: the blue component of the color (from 0 to 255), if r_color was not given a list/tuple
+        show: whether or not to show the new color immediately
+        """
         if type(light) is not int:
             raise TypeError("light must be an integer")
 
@@ -324,16 +389,36 @@ class Trilobot():
             self.show_underlighting()
 
     def set_underlight_hsv(self, light, h, s=1, v=1, show=True):
+        """ Sets a single underlight to a given HSV color.
+        light: the ID of the light to set the color of
+        h: the hue of the color (from 0.0 to 1.0)
+        s: the saturation of the color (from 0.0 to 1.0)
+        v: the value of the color (from 0.0 to 1.0)
+        show: whether or not to show the new color immediately
+        """
         color = [i * 255 for i in hsv_to_rgb(h, s, v)]
         self.set_underlight(light, color, show=show)
 
     def fill_underlighting(self, r_color, g=None, b=None, show=True):
+        """ Fill all the underlights with a given RGB color.
+        light: the ID of the light to set the color of
+        r_color: the red component of the color (from 0 to 255), or a list/tuple containing all three color components.
+        g: the green component of the color (from 0 to 255), if r_color was not given a list/tuple
+        b: the blue component of the color (from 0 to 255), if r_color was not given a list/tuple
+        show: whether or not to show the new color immediately
+        """
         for i in range(0, NUM_UNDERLIGHTS):
             self.set_underlight(i, r_color, g, b, show=False)
         if show:
             self.show_underlighting()
 
     def fill_underlighting_hsv(self, h, s=1, v=1, show=True):
+        """ Fill all the underlights with a given HSV color.
+        h: the hue of the color (from 0.0 to 1.0)
+        s: the saturation of the color (from 0.0 to 1.0)
+        v: the value of the color (from 0.0 to 1.0)
+        show: whether or not to show the new color immediately
+        """
         color = [i * 255 for i in hsv_to_rgb(h, s, v)]
         for i in range(0, NUM_UNDERLIGHTS):
             self.set_underlight(i, color, show=False)
@@ -341,15 +426,29 @@ class Trilobot():
             self.show_underlighting()
 
     def clear_underlight(self, light, show=True):
+        """ Clear the color of a single underlight. This has the effect of turning it off.
+        light: the ID of the light to clear
+        show: whether or not to show the new color immediately
+        """
         self.set_underlight(light, 0, 0, 0, show=show)
 
     def clear_underlighting(self, show=True):
+        """ Clear the color of all underlights. This has the effect of turning them off.
+        show: whether or not to show the new color immediately
+        """
         self.fill_underlighting(0, 0, 0, show=show)
 
     #########################
     # Underlighting Helpers #
     #########################
     def set_underlights(self, lights, r_color, g=None, b=None, show=True):
+        """ Sets a group of underlights to a given RGB color.
+        lights: a list/tuple containing the IDs of the lights to set the color of
+        r_color: the red component of the color (from 0 to 255), or a list/tuple containing all three color components.
+        g: the green component of the color (from 0 to 255), if r_color was not given a list/tuple
+        b: the blue component of the color (from 0 to 255), if r_color was not given a list/tuple
+        show: whether or not to show the new color immediately
+        """
         if type(lights) != list and type(lights) != tuple:
             raise TypeError("lights must be a list or tuple containing the numbers for the underlights to set (from 0 to 5)")
 
@@ -366,10 +465,21 @@ class Trilobot():
         self.set_underlight(lights[light_count - 1], r_color, g, b, show=show)
 
     def set_underlights_hsv(self, lights, h, s=1, v=1, show=True):
+        """ Sets a group of underlights to a single HSV color.
+        lights: a list/tuple containing the IDs of the lights to set the color of
+        h: the hue of the color (from 0.0 to 1.0)
+        s: the saturation of the color (from 0.0 to 1.0)
+        v: the value of the color (from 0.0 to 1.0)
+        show: whether or not to show the new color immediately
+        """
         color = [i * 255 for i in hsv_to_rgb(h, s, v)]
         self.set_underlights(lights, color, show=show)
 
     def clear_underlights(self, lights, show=True):
+        """ Clear the color of a group of underlights. This has the effect of turning them off.
+        lights: a list/tuple containing the IDs of the lights to set the color of
+        show: whether or not to show the new color immediately
+        """
         self.set_underlights(lights, 0, 0, 0, show=show)
 
     ##############
@@ -474,16 +584,24 @@ and "sudo systemctl enable pigpiod" to have it auto-start on every boot')
                                   pin_factory=PiGPIOFactory())
 
     def set_servo_value(self, value):
+        """ Sets the servo to a given value between its minimum and maximum angles.
+        value: a number between -1.0 and 1.0
+        """
         if self.servo is None:
             self.initialise_servo()
         self.servo.value = value
 
     def set_servo_angle(self, angle):
+        """ Sets the servo to a given angle.
+        angle: an angle in degrees between -90 and +90
+        """
         if self.servo is None:
             self.initialise_servo()
         self.servo.angle = angle
 
     def disable_servo(self):
+        """ Disables the servo, allowing it to be turned freely.
+        """
         if self.servo is not None:
             self.servo.value = None
 
@@ -491,21 +609,36 @@ and "sudo systemctl enable pigpiod" to have it auto-start on every boot')
     # Servo Helpers #
     #########################
     def servo_to_center(self):
+        """ Moves the servo to its center angle.
+        """
         if self.servo is None:
             self.initialise_servo()
         self.servo.mid()
 
     def servo_to_min(self):
+        """ Moves the servo to its minimum angle.
+        """
         if self.servo is None:
             self.initialise_servo()
         self.servo.min()
 
     def servo_to_max(self):
+        """ Moves the servo to its maximum angle.
+        """
         if self.servo is None:
             self.initialise_servo()
         self.servo.max()
 
     def servo_to_percent(self, value, value_min=0, value_max=1, angle_min=-90, angle_max=+90):
+        """ Moves the servo to an angle between the given minimum and maximums.
+        Useful for having a sensor that outputs between two values move the servo between two particular angles.
+        By default this will convert a percentage value between 0.0 and 1.0 to servo angles of -90 and +90 degrees.
+        value: the value to be applied to the servo
+        value_min: the minimum value expected
+        value_max: the maximum value expected
+        angle_min: the angle that corresponds to value_min
+        angle_max: the angle that corresponds to value_max
+        """
         if self.servo is None:
             self.initialise_servo()
         # Map the value from its range to an angle range

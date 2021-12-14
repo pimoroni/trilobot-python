@@ -4,7 +4,8 @@ import time
 from trilobot import *
 
 """
-Examples of how to set Trilobot's underlights to different colors and have them all show at the same time.
+Examples of how to set Trilobot's underlights to different colors and
+have them all show at the same time.
 """
 print("Trilobot Example: Show Underlighting\n")
 

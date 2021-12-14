@@ -2,6 +2,8 @@ from trilobot.simple_controller import SimpleController
 
 
 def create_8bitdo_lite_controller():
+    """ Create a controller class for the 8BitDo Lite controller.
+    """        
     controller = SimpleController("8BitDo Lite gamepad")
 
     # Button and axis registrations for 8BitDo Lite
@@ -37,6 +39,8 @@ def create_8bitdo_lite_controller():
 
 
 def create_8bitdo_sn30_controller():
+    """ Create a controller class for the 8BitDo SN30 controller.
+    """
     controller = SimpleController("8Bitdo SN30 GamePad")
 
     # Button and axis registrations for 8BitDo SN30
@@ -59,6 +63,8 @@ def create_8bitdo_sn30_controller():
 
 
 def create_8bitdo_sn30_pro_controller():
+    """ Create a controller class for the 8BitDo SN30 Pro+ controller.
+    """
     controller = SimpleController("8BitDo SN30 Pro+")
 
     # Button and axis registrations for 8BitDo SN30 Pro+
@@ -94,6 +100,8 @@ def create_8bitdo_sn30_pro_controller():
 
 
 def create_rock_candy_controller():
+    """ Create a controller class for the RockCandy PS3 controller.
+    """
     controller = SimpleController("Performance Designed Products")
 
     # Button and axis registrations for Rock Candy PS3 Controller
@@ -121,6 +129,9 @@ def create_rock_candy_controller():
 
 
 def create_xbox360_wireless_controller(stick_deadzone_percent=0.2):
+    """ Create a controller class for the XBox360 Wireless controller.
+    stick_deadzone_percent: the deadzone amount to apply to the controller's analog sticks
+    """
     controller = SimpleController("Xbox 360 Wireless Receiver")
 
     # Button and axis registrations for Rock Candy PS3 Controller
@@ -152,6 +163,9 @@ def create_xbox360_wireless_controller(stick_deadzone_percent=0.2):
 
 
 def create_ps4_wireless_controller(stick_deadzone_percent=0.1):
+    """ Create a controller class for the PlayStation 4 Wireless controller.
+    stick_deadzone_percent: the deadzone amount to apply to the controller's analog sticks
+    """
     controller = SimpleController("Wireless Controller", exact_match=True)
 
     # Button and axis registrations for PS4 Controller
@@ -183,6 +197,8 @@ def create_ps4_wireless_controller(stick_deadzone_percent=0.1):
 
 
 def create_ps4_wireless_controller_touchpad():
+    """ Create a controller class for the PlayStation 4 Wireless controller's touchpad.
+    """
     controller = SimpleController("Wireless Controller Touchpad", exact_match=True)
 
     # Button and axis registrations for PS4 Controller Touchpad
@@ -203,6 +219,8 @@ def create_ps4_wireless_controller_touchpad():
 
 
 def create_ps4_wireless_controller_motion():
+    """ Create a controller class for the PlayStation 4 Wireless controller's motion sensors.
+    """
     controller = SimpleController("Wireless Controller Motion Sensors", exact_match=True)
 
     # Button and axis registrations for PS4 Controller Motion
@@ -217,6 +235,8 @@ def create_ps4_wireless_controller_motion():
 
 
 def choose_controller():
+    """ Present the user with a selection menu for pre-configured controllers.
+    """
     controller_list = [("8BitDo Lite", create_8bitdo_lite_controller),
                        ("8Bitdo SN30", create_8bitdo_sn30_controller),
                        ("8BitDo SN30 Pro+", create_8bitdo_sn30_pro_controller),
