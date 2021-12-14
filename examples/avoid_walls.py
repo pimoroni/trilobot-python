@@ -24,7 +24,7 @@ while not tbot.read_button(BUTTON_A):
 
     # Turn if we are too closer than the turn distance
     if distance < TURN_DISTANCE:
-        tbot.set_right_speed(-SPEED)
+        tbot.turn_right(SPEED)
     else:
-        tbot.set_right_speed(SPEED)
+        tbot.forward(SPEED)
     # No sleep is needed, as distance sensor provides sleep
