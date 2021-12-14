@@ -222,3 +222,25 @@ The following methods are available from code:
 * `servo_to_percent(value, value_min=0, value_max=1, angle_min=-90, angle_max=+90)`: Moves the servo to a position that is a percentage between the minimum and maximum angles specified.
 
 * `initialise_servo(min_angle=-90, max_angle=90, min_pulse_us=500, max_pulse_us=2500)`: Initialises servo control. This gets called automatically when using any of the above functions (other than `disable_servo()`) with default parameters. Calling this function before any of the other functions lets you set the exact pulse timings that correspond with the minimum and maximum angles your servo is able to reach. The subsequent servo function calls will then use these timings.
+
+## Remote Control
+
+Although not directly a feature of the Trilobot hardware, we could not leave the library without some way to remote control your Trilobot.
+
+For this, there is a `SimpleController` class that does much of the heavy lifting with handling controller events for buttons and analog axes like sticks and triggers. There are even a bunch of profiles for common controllers to get you started. These can be found in [controller_mappings.py](controller_mappings.py) and either called directly, or accessed using the `choose_controller()` function. Here is an example:
+
+```python
+from trilobot import *
+from trilobot import controller_mappings
+
+tbot = Trilobot()
+
+# Presents the user with an option of what controller to use
+controller = controller_mappings.choose_controller()
+```
+
+With a controller chosen, the first thing to do is connect to it with `controller.connect()`. From there you will need to regularly update the controller by calling `controller.update()`. This will get the very latest values from your controller, which can be read using `read_button(name)` and `read_axis(name)`, where `name` is the name of that button or axis. For example `"Cross"` would be the name for the Cross button on a PlayStation 4 controller, and `"LX"` the side-to-side axis of the left analog stick.
+
+If you are unsure what names a controller supports, check [controller_mappings.py](controller_mappings.py) and find the function for your controller, such as `create_ps4_wireless_controller()`.
+
+For a full example of how to use a controller with your Trilobot, see [remote_controp.py](../../examples/remote_control.py).
