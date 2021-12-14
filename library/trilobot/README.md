@@ -241,6 +241,6 @@ controller = controller_mappings.choose_controller()
 
 With a controller chosen, the first thing to do is connect to it with `controller.connect()`. From there you will need to regularly update the controller by calling `controller.update()`. This will get the very latest values from your controller, which can be read using `read_button(name)` and `read_axis(name)`, where `name` is the name of that button or axis. For example `"Cross"` would be the name for the Cross button on a PlayStation 4 controller, and `"LX"` the side-to-side axis of the left analog stick.
 
-If you are unsure what names a controller supports, check [controller_mappings.py](controller_mappings.py) and find the function for your controller, such as `create_ps4_wireless_controller()`.
+If you are unsure what names a controller supports, check [controller_mappings.py](controller_mappings.py) and find the function for your controller, such as `create_ps4_wireless_controller()` and look for the lines that say `register_button` and `register_axis`.
 
-For a full example of how to use a controller with your Trilobot, see [remote_controp.py](../../examples/remote_control.py).
+For a full example of how to use a controller with your Trilobot, see [remote_control.py](../../examples/remote_control.py).
