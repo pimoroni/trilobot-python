@@ -52,10 +52,10 @@ class Trilobot():
 
     # Motor driver pins, via DRV8833PWP Dual H-Bridge
     MOTOR_EN_PIN = 26
-    MOTOR_LEFT_P = 11
-    MOTOR_LEFT_N = 8
-    MOTOR_RIGHT_P = 9
-    MOTOR_RIGHT_N = 10
+    MOTOR_LEFT_P = 8
+    MOTOR_LEFT_N = 11
+    MOTOR_RIGHT_P = 10
+    MOTOR_RIGHT_N = 9
 
     # HC-SR04 Ultrasound pins
     ULTRA_TRIG_PIN = 13
@@ -215,12 +215,12 @@ class Trilobot():
         pwm_p = None
         pwm_n = None
         if motor == 0:
-            pwm_p = self.motor_pwm_mapping[self.MOTOR_LEFT_P]
-            pwm_n = self.motor_pwm_mapping[self.MOTOR_LEFT_N]
+            # Left motor inverted so a positive speed drives forward
+            pwm_p = self.motor_pwm_mapping[self.MOTOR_LEFT_N]
+            pwm_n = self.motor_pwm_mapping[self.MOTOR_LEFT_P]
         else:
-            # Right motor inverted so a positive speed drives forward
-            pwm_p = self.motor_pwm_mapping[self.MOTOR_RIGHT_N]
-            pwm_n = self.motor_pwm_mapping[self.MOTOR_RIGHT_P]
+            pwm_p = self.motor_pwm_mapping[self.MOTOR_RIGHT_P]
+            pwm_n = self.motor_pwm_mapping[self.MOTOR_RIGHT_N]
 
         if speed > 0.0:
             pwm_p.ChangeDutyCycle(100)
