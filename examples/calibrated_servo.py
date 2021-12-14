@@ -4,7 +4,8 @@ import time
 from trilobot import Trilobot
 
 """
-An example of how to set a calibration on a servo connected to Trilobot, and have it move to exact angles.
+An example of how to set a calibration on a servo connected to Trilobot,
+and have it move to exact angles.
 """
 print("Trilobot Example: Calibtrated Servo\n")
 

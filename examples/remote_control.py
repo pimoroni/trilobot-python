@@ -6,13 +6,21 @@ from trilobot import *
 from trilobot import controller_mappings
 
 """
-An advanced example of how Trilobot can be remote controlled using a controller or gamepad. This will require one of the supported controllers to already be paired to your Trilobot.
+An advanced example of how Trilobot can be remote controlled using a controller or gamepad.
+This will require one of the supported controllers to already be paired to your Trilobot.
 
-At startup a list of supported controllers will be shown, with you being asked to select one. The program will then attempt to connect to the controller, and if successful Trilobot's underlights will illuminate with a rainbow pattern.
+At startup a list of supported controllers will be shown, with you being asked to select one.
+The program will then attempt to connect to the controller, and if successful Trilobot's
+underlights will illuminate with a rainbow pattern.
 
-From there you can drive your Trilobot around using the left analog stick or d-pad. Pressing the right trigger will switch to Tank-steer mode, where the left analog stick controls the left wheel, and the right analog stick controls the right wheel. Pressing the left trigger will switch back to regular mode.
+From there you can drive your Trilobot around using the left analog stick or d-pad.
+Pressing the right trigger will switch to Tank-steer mode, where the left analog stick
+controls the left wheel, and the right analog stick controls the right wheel.
+Pressing the left trigger will switch back to regular mode.
 
-If your controller becomes disconnected Trilobot will stop moving and show a slow red pulsing animation on its underlights. Simply reconnect your controller and after 10 to 20 seconds, the program should find your controller again and start up again.
+If your controller becomes disconnected Trilobot will stop moving and show a slow red
+pulsing animation on its underlights. Simply reconnect your controller and after 10 to 20
+seconds, the program should find your controller again and start up again.
 
 Support for further controllers can be added to library/trilobot/controller_mappings.py
 

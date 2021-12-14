@@ -4,7 +4,8 @@ import time
 from trilobot import *
 
 """
-Shows how to use the buttons to make their neighbouring LEDs fade up when pressed fade down when released.
+Shows how to use the buttons to make their neighbouring LEDs fade up
+when pressed fade down when released.
 
 Press CTRL + C to exit.
 """
