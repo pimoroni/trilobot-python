@@ -3,7 +3,7 @@ from trilobot.simple_controller import SimpleController
 
 def create_8bitdo_lite_controller():
     """ Create a controller class for the 8BitDo Lite controller.
-    """        
+    """
     controller = SimpleController("8BitDo Lite gamepad")
 
     # Button and axis registrations for 8BitDo Lite

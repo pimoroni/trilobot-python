@@ -201,7 +201,7 @@ class SimpleController():
         max_value: the maximum input value to expect from an event for this axis
         deadzone_percent: how much value needs to be received before a non-zero output is given
         changed_callback: the function to call when a changed event occurs
-        alt_name: an alternative name to give the axis (for where 'LT' on one controller would be 'L2' on another)        
+        alt_name: an alternative name to give the axis (for where 'LT' on one controller would be 'L2' on another)
         """
         for axis in self.axes:
             if name == axis.name:
@@ -224,7 +224,7 @@ class SimpleController():
         max_value: the maximum input value to expect from an event for this axis
         deadzone_percent: how much value needs to be received before a non-zero output is given
         changed_callback: the function to call when a changed event occurs
-        alt_name: an alternative name to give the axis (for where 'LT' on one controller would be 'L2' on another)        
+        alt_name: an alternative name to give the axis (for where 'LT' on one controller would be 'L2' on another)
         """
         for axis in self.axes:
             if name == axis.name:
