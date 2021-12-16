@@ -153,7 +153,7 @@ tbot.clear_underlights(lights)  # Off
 ```
 
 For convenience, several groups have been pre-defined.
-* `LIGHTS_LEFT` 
+* `LIGHTS_LEFT`
 * `LIGHTS_RIGHT`
 * `LIGHTS_FRONT`
 * `LIGHTS_MIDDLE`
@@ -172,7 +172,7 @@ In the example below, each light is set to red in a loop, then they are all show
 ```python
 for led in range(NUM_UNDERLIGHTS):
     tbot.set_underlight(led, 255, 0, 0, show=False)  # Red
-     
+
 tbot.show_underlighting()
 ```
 
@@ -203,11 +203,11 @@ Some default values are used to get these readings, which can be overwritten wit
 
 The default `offset` is set to a value that is suitable for the Raspberry Pi 4, but may need adjusting if you are using a different model of Raspberry Pi.
 
-To give more stable readings, this method will attempt to take several readings and return the average distance. You can set the maximum time you want it to take before returning a result so you have control over how long this method ties up your program. It takes as many readings up to the requested number of samples set as it can before the timeout total is reached. It then returns the average distance measured. Any readings where the single reading takes more than the timeout is ignored so these do not distort the average distance measured. 
+To give more stable readings, this method will attempt to take several readings and return the average distance. You can set the maximum time you want it to take before returning a result so you have control over how long this method ties up your program. It takes as many readings up to the requested number of samples set as it can before the timeout total is reached. It then returns the average distance measured. Any readings where the single reading takes more than the timeout is ignored so these do not distort the average distance measured.
 
 If no valid readings are taken before the timeout then it returns zero. You can choose parameters to get faster but less accurate readings or take longer to get more samples to average before it returns. The timeout effectively limits the maximum distance the sensor can measure because if the sound pulse takes longer to return over the distance than the timeout set then this method returns zero rather than waiting. So to extend the distance that can be measured, use a larger timeout.
 
-## Servo 
+## Servo
 
 Trilobot features a servo connector between the two motors that can be used to power a small 5V servo.
 
