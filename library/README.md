@@ -27,7 +27,7 @@ Latest/development library from GitHub:
 
 * `git clone https://github.com/pimoroni/trilobot-python`
 * `cd trilobot-python`
-* `sudo ./install.sh`
+* `sudo ./install.sh --unstable`
 
 
 # Changelog
