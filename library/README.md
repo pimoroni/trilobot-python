@@ -33,7 +33,7 @@ Latest/development library from GitHub:
 
 There are many examples to get you started with your Trilobot. With the library installed on your Raspberry Pi, these can be found in the `~/Pimoroni/trilobot/examples` directory. Details about what each one does can be found in the [examples readme](../examples/README.md).
 
-To take Trilobot further, the full API is described in the [library readme](/trilobot/README.md)
+To take Trilobot further, the full API is described in the [library readme](/library/trilobot/README.md)
 
 # Changelog
 0.0.1
