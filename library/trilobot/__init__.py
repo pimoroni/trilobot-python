@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import time
-import sn3218
 import RPi.GPIO as GPIO
 from colorsys import hsv_to_rgb
 
@@ -74,6 +73,9 @@ class Trilobot():
         """ Initialise trilobot's hardware functions
         """
 
+        import sn3218
+        self.sn3218 = sn3218
+
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
 
@@ -130,12 +132,12 @@ class Trilobot():
                                   self.MOTOR_RIGHT_P: motor_right_p_pwm,
                                   self.MOTOR_RIGHT_N: motor_right_n_pwm}
 
-        sn3218.reset()
+        self.sn3218.reset()
 
         self.underlight = [0 for i in range(18)]
-        sn3218.output(self.underlight)
-        sn3218.enable_leds(0b111111111111111111)
-        sn3218.disable()
+        self.sn3218.output(self.underlight)
+        self.sn3218.enable_leds(0b111111111111111111)
+        self.sn3218.disable()
 
         # setup ultrasonic sensor pins
         GPIO.setup(self.ULTRA_TRIG_PIN, GPIO.OUT)
@@ -147,7 +149,7 @@ class Trilobot():
     def __del__(self):
         """ Clean up GPIO and underlighting when the class is deleted.
         """
-        sn3218.disable()
+        self.sn3218.disable()
         GPIO.cleanup()
 
     ###########
@@ -328,13 +330,13 @@ class Trilobot():
     def show_underlighting(self):
         """ Shows the previously stored colors on Trilobot's underlights.
         """
-        sn3218.output(self.underlight)
-        sn3218.enable()
+        self.sn3218.output(self.underlight)
+        self.sn3218.enable()
 
     def disable_underlighting(self):
         """ Disables Trilobot's underlighting, preserving the last set colors.
         """
-        sn3218.disable()
+        self.sn3218.disable()
 
     def set_underlight(self, light, r_color, g=None, b=None, show=True):
         """ Sets a single underlight to a given RGB color.
