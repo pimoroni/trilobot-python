@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 
 import time
-try:
-    from sn3218 import SN3218
-except ImportError:
-    import sn3218
+import sn3218
 import RPi.GPIO as GPIO
 from colorsys import hsv_to_rgb
 
@@ -134,7 +131,7 @@ class Trilobot():
                                   self.MOTOR_RIGHT_N: motor_right_n_pwm}
 
         try:
-            self.sn3218 = SN3218()
+            self.sn3218 = sn3218.SN3218()
         except NameError:
             self.sn3218 = sn3218
 
