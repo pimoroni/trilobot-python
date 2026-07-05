@@ -20,3 +20,5 @@ library/debian/
 .tox
 
 .idea
+.venv
+uv.lock
