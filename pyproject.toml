@@ -38,7 +38,7 @@ classifiers = [
 dependencies = [
     "sn3218>=2.0.0",
     "evdev",
-    "rpi-lgpio>=0.6"
+    "rpi-lgpio>=0.6 ; platform_machine == 'aarch64' or platform_machine == 'armv7l' or platform_machine == 'armv6l'"
 ]
 
 [tool.hatch.metadata.hooks.requirements_txt.optional-dependencies]
