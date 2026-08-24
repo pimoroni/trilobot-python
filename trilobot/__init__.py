@@ -2,11 +2,15 @@
 
 import time
 from colorsys import hsv_to_rgb
+from importlib.metadata import PackageNotFoundError, version
 
 import RPi.GPIO as GPIO
 import sn3218
 
-__version__ = '0.0.2'
+try:
+    __version__ = version("trilobot")
+except PackageNotFoundError:
+    __version__ = "0.0.0"
 
 BUTTON_A = 0
 BUTTON_B = 1
