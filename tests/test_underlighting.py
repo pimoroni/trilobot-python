@@ -15,7 +15,7 @@ def test_disable_underlighting(GPIO, sn3218, trilobot):
 @pytest.mark.parametrize("b", [None, 0, 128, 255])
 @pytest.mark.parametrize("g", [None, 0, 128, 255])
 @pytest.mark.parametrize("r_color", ["#00ff00", (255, 0, 0), 255])
-@pytest.mark.parametrize("light", range(0, 5))
+@pytest.mark.parametrize("light", range(5))
 def test_set_underlight(GPIO, sn3218, trilobot, light, r_color, g, b, show):
     bot = trilobot.Trilobot()
 

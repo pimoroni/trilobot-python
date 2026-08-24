@@ -41,5 +41,5 @@ def test_set_button_led_invalid_led(GPIO, sn3218, trilobot, button_led):
 def test_set_button_led_invalid_value(GPIO, sn3218, trilobot, led_value):
     bot = trilobot.Trilobot()
 
-    with pytest.raises((ValueError)):
+    with pytest.raises(ValueError):
         bot.set_button_led(0, led_value)

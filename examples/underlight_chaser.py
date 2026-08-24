@@ -28,7 +28,7 @@ MAPPING = [LIGHT_REAR_LEFT,
 tbot = Trilobot()
 
 while True:
-    for n in range(0, NUM_UNDERLIGHTS - 1):
+    for n in range(NUM_UNDERLIGHTS - 1):
         phy_led = MAPPING[n]
         tbot.clear_underlighting(show=False)
         tbot.set_underlight(phy_led, RED)

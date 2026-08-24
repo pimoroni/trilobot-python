@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import contextlib
 import time
 from colorsys import hsv_to_rgb
 from importlib.metadata import PackageNotFoundError, version
@@ -42,7 +43,7 @@ MOTOR_RIGHT = 1
 NUM_MOTORS = 2
 
 
-class Trilobot():
+class Trilobot:
     # User button pins
     BUTTON_A_PIN = 5
     BUTTON_B_PIN = 6
@@ -138,7 +139,7 @@ class Trilobot():
         try:
             self.sn3218 = sn3218.SN3218()
         except FileNotFoundError:
-            raise RuntimeError("Please enable i2c!\n👉 run \"sudo raspi-config nonint do_i2c 0\" and try again! 👈")
+            raise RuntimeError("Please enable i2c!\n👉 run \"sudo raspi-config nonint do_i2c 0\" and try again! 👈") from None
         except NameError:
             self.sn3218 = sn3218
 
@@ -159,10 +160,8 @@ class Trilobot():
     def __del__(self):
         """ Clean up GPIO and underlighting when the class is deleted.
         """
-        try:
+        with contextlib.suppress(AttributeError):
             self.sn3218.disable()
-        except AttributeError:
-            pass
         GPIO.cleanup()
 
     ###########
@@ -371,9 +370,9 @@ class Trilobot():
 
             if isinstance(r_color, str):
                 value = r_color.strip('#')
-                r_color = list(int(value[i:i + 2], 16) for i in (0, 2, 4))
+                r_color = [int(value[i:i + 2], 16) for i in (0, 2, 4)]
 
-            if isinstance(r_color, list) or isinstance(r_color, tuple):
+            if isinstance(r_color, (list, tuple)):
                 if len(r_color) != 3 or \
                         (r_color[0] < 0 or r_color[0] > 255) or \
                         (r_color[1] < 0 or r_color[1] > 255) or \
@@ -422,7 +421,7 @@ class Trilobot():
         b: the blue component of the color (from 0 to 255), if r_color was not given a list/tuple
         show: whether or not to show the new color immediately
         """
-        for i in range(0, NUM_UNDERLIGHTS):
+        for i in range(NUM_UNDERLIGHTS):
             self.set_underlight(i, r_color, g, b, show=False)
         if show:
             self.show_underlighting()
@@ -435,7 +434,7 @@ class Trilobot():
         show: whether or not to show the new color immediately
         """
         color = [i * 255 for i in hsv_to_rgb(h, s, v)]
-        for i in range(0, NUM_UNDERLIGHTS):
+        for i in range(NUM_UNDERLIGHTS):
             self.set_underlight(i, color, show=False)
         if show:
             self.show_underlighting()
@@ -474,7 +473,7 @@ class Trilobot():
             raise ValueError("lights cannot be empty")
 
         if light_count > 1:
-            for i in range(0, light_count - 1):
+            for i in range(light_count - 1):
                 self.set_underlight(lights[i], r_color, g, b, show=False)
 
         self.set_underlight(lights[light_count - 1], r_color, g, b, show=show)
@@ -668,7 +667,7 @@ if __name__ == "__main__":
 
     time.sleep(2.0)
     tbot.fill_underlighting(127, 127, 127, show=False)
-    for i in range(0, 10):
+    for i in range(10):
         print(i)
         tbot.show_underlighting()
         time.sleep(0.1)
@@ -708,28 +707,16 @@ if __name__ == "__main__":
         if h >= 1.0:
             h -= 1.0
 
-        if tbot.read_button(BUTTON_A):
-            a = min(a + 0.01, 1.0)
-        else:
-            a = max(a - 0.01, 0.0)
+        a = min(a + 0.01, 1.0) if tbot.read_button(BUTTON_A) else max(a - 0.01, 0.0)
         tbot.set_button_led(BUTTON_A, a)
 
-        if tbot.read_button(BUTTON_B):
-            b = min(b + 0.01, 1.0)
-        else:
-            b = max(b - 0.01, 0.0)
+        b = min(b + 0.01, 1.0) if tbot.read_button(BUTTON_B) else max(b - 0.01, 0.0)
         tbot.set_button_led(BUTTON_B, b)
 
-        if tbot.read_button(BUTTON_X):
-            x = min(x + 0.01, 1.0)
-        else:
-            x = max(x - 0.01, 0.0)
+        x = min(x + 0.01, 1.0) if tbot.read_button(BUTTON_X) else max(x - 0.01, 0.0)
         tbot.set_button_led(BUTTON_X, x)
 
-        if tbot.read_button(BUTTON_Y):
-            y = min(y + 0.01, 1.0)
-        else:
-            y = max(y - 0.01, 0.0)
+        y = min(y + 0.01, 1.0) if tbot.read_button(BUTTON_Y) else max(y - 0.01, 0.0)
         tbot.set_button_led(BUTTON_Y, y)
 
         tbot.set_left_speed(a - b)

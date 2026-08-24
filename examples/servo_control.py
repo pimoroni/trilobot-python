@@ -47,10 +47,10 @@ print("Now Sweep", SWEEPS, "Times, in discrete steps")
 for j in range(SWEEPS):
     print("Discrete Sweep:", j)
 
-    for i in range(0, STEPS):
+    for i in range(STEPS):
         tbot.servo_to_percent(i, 0, STEPS, 0)
         time.sleep(STEPS_INTERVAL)
-    for i in range(0, STEPS):
+    for i in range(STEPS):
         tbot.servo_to_percent(i, STEPS, 0, 0)
         time.sleep(STEPS_INTERVAL)
 

@@ -26,7 +26,7 @@ while not tbot.read_button(BUTTON_A):
     if distance >= 0.0:
         scale = (distance - GOAL_DISTANCE) / SPEED_RANGE
         speed = max(min(scale, 1.0), -1.0) * TOP_SPEED
-        print("Distance is {:.1f} cm. Speed is {:.2f}".format(distance, speed))
+        print(f"Distance is {distance:.1f} cm. Speed is {speed:.2f}")
 
         tbot.set_motor_speeds(speed, speed)
     else:

@@ -14,7 +14,7 @@ def map(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 
-class Button():
+class Button:
     def __init__(self, name, alt_name, ev_code, ev_type, pressed_value, released_value, pressed_callback, released_callback):
         """ Initialises the controller Button class.
         name: the name to give the button
@@ -76,7 +76,7 @@ class Button():
         return (ev_code == self.ev_code and ev_type == self.ev_type)
 
 
-class Axis():
+class Axis:
     def __init__(self, name, alt_name, ev_code, min_value, max_value, min_output, max_output, deadzone_percent, changed_callback):
         """ Initialises the controller Axis class.
         name: the name to give the axis
@@ -134,7 +134,7 @@ class Axis():
         return (ev_code == self.ev_code and ev_type == ecodes.EV_ABS)
 
 
-class SimpleController():
+class SimpleController:
     def __init__(self, controller_name, exact_match=False):
         """Initialise the SimpleController class.
         controller_name: the name of the controller device as reported by the system
@@ -152,10 +152,7 @@ class SimpleController():
     def axis_or_button_exists(self, collection, name):
         if name is None:
             return False
-        for item in collection:
-            if name in (item.name, item.alt_name):
-                return True
-        return False
+        return any(name in (item.name, item.alt_name) for item in collection)
 
     def register_button(self, name, ev_code, pressed_callback=None, released_callback=None, alt_name=None):
         """ Registers a button with this controller.
@@ -167,9 +164,9 @@ class SimpleController():
         alt_name: an alternative name to give the button (for where 'A' on one controller would be 'Cross' on another)
         """
         if self.axis_or_button_exists(self.buttons, name):
-            raise ValueError("A button with the name or alt_name '{}' is already registered. Use a different name".format(name))
+            raise ValueError(f"A button with the name or alt_name '{name}' is already registered. Use a different name")
         if self.axis_or_button_exists(self.buttons, alt_name):
-            raise ValueError("A button with the name or alt_name '{}' is already registered. Use a different alt_name".format(alt_name))
+            raise ValueError(f"A button with the name or alt_name '{alt_name}' is already registered. Use a different alt_name")
 
         self.buttons.append(Button(name, alt_name, ev_code, ecodes.EV_KEY, 1, 0, pressed_callback, released_callback))
 
@@ -386,4 +383,4 @@ class SimpleController():
                 self.disconnect(False)
                 if debug:
                     print(f"Connection to '{self.controller_to_find}' lost")
-                raise RuntimeError()
+                raise RuntimeError() from None

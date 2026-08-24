@@ -375,7 +375,7 @@ def choose_controller():
 
     print("Currently supported controllers:")
 
-    for i in range(0, len(controller_list)):
+    for i in range(len(controller_list)):
         print("  ", i, ") ", controller_list[i][0], sep="")
 
     try:

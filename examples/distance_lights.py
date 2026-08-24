@@ -64,7 +64,7 @@ def colour_from_distance(distance):
 while not tbot.read_button(BUTTON_A):
 
     distance = tbot.read_distance()
-    print("Distance is {:.1f} cm".format(distance))
+    print(f"Distance is {distance:.1f} cm")
 
     rgb_colour = colour_from_distance(distance)
     tbot.fill_underlighting(rgb_colour)
